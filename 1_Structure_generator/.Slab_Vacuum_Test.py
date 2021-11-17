@@ -160,7 +160,7 @@ Slab = Slab.get_sorted_structure(None, False)
 
 # 9. Vacuum distance 가 바뀌는 Slab Generation
 S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_Distance, End_Distance, Distance 증가를 입력해주세요 (ex. 8 14 1= 8~14까지 1[A] 씩 증가): ").split(" ")
-Cell_type=input("Full cell 의 경우 F, Half cell 의 경우 H 를 입력하주세요: ")
+Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 입력해주세요: ")
 for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
     Vacuum_height=float(k)
     Slab_Temp=Slab.as_dict()
@@ -175,16 +175,16 @@ for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
     Slab_Temp['lattice']['matrix'][2][1] = (C_NewLen / C_OriLen) * Slab_Temp['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
     Slab_Temp['lattice']['matrix'][2][2] = (C_NewLen / C_OriLen) * Slab_Temp['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
     C_ratio = float(C_OriLen / C_NewLen)  # 이동시켜야할 C axis 비율 저장
-    if Cell_type == "F":  # Full Cell 의 경우
-        for j in range(0, len(Slab_Temp['sites'])):
-            Old_C = Slab_Temp['sites'][j]['abc'][2]
-            New_C = 0.5 + ((Old_C - 0.5) * C_ratio)
-            Slab_Temp2['sites'][j]['abc'][2] = New_C
-    else:  # Half_Cell 의 경우
+    if Cell_type == "N":  # Half Cell 의 경우
         for j in range(0, len(Slab_Temp['sites'])):
             Old_C = Slab_Temp['sites'][j]['abc'][2]
             New_C = Old_C * C_ratio
             Slab_Temp['sites'][j]['abc'][2] = New_C
+    else:  # Full_Cell 의 경우
+        for j in range(0, len(Slab_Temp['sites'])):
+            Old_C = Slab_Temp['sites'][j]['abc'][2]
+            New_C = 0.5 + ((Old_C - 0.5) * C_ratio)
+            Slab_Temp2['sites'][j]['abc'][2] = New_C
 
     print("======================================================================================================================================================")
     Filename1 = Slab_Name.split('g')[0] + "g"
