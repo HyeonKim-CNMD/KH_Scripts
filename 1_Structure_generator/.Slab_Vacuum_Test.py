@@ -159,6 +159,7 @@ for i in Del:
 # 9. Vacuum distance 가 바뀌는 Slab Generation
 S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_Distance, End_Distance, Distance 증가를 입력해주세요 (ex. 3 5 1= 3~5 를 1[A] 씩 증가): ").split(" ")
 for k in range(int(S_Dis), int(S_Dis), int(S_Dis)):
+    print("Y")
     Vacuum_height=float(k)
     MinC, MaxC = Slab_Temp.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
     Caxis = Slab.as_dict()['lattice']['c']
