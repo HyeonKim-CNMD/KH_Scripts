@@ -160,7 +160,7 @@ for k in range(Cen_Layer_U, 0, -1):
                 break
 
     Slab_Temp2["miller_index"] = (1, 1, 1)
-    Slab_Temp2["oriented_unit_cell"] = Bulk.as_dict()
+    Slab_Temp2["oriented_unit_cell"] = Slab_Temp
     Slab_Temp2['shift'] = 0
     Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     Slab_Temp2['energy'] = 0
@@ -173,11 +173,11 @@ for k in range(Cen_Layer_U, 0, -1):
     C_OriLen = Slab_Temp2['lattice']['c']
     Slab_Height = (MaxC - MinC) * C_OriLen
     C_NewLen = float(Slab_Height + Vacuum_height)
-    C_ratio = float(sqrt(C_OriLen / C_NewLen))  # 이시켜야할 C axis 비율 저장
+    C_ratio = float(C_OriLen / C_NewLen)  # 이시켜야할 C axis 비율 저장
 
-    Slab_Temp2['lattice']['matrix'][2][0] = sqrt(C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp2['lattice']['matrix'][2][1] = sqrt(C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp2['lattice']['matrix'][2][2] = sqrt(C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Temp2['lattice']['matrix'][2][0] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Temp2['lattice']['matrix'][2][1] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Temp2['lattice']['matrix'][2][2] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
     if Cell_type == "N":  # Half Cell 의 경우
         for j in range(0, len(Slab_Temp2['sites'])):
             Old_C = Slab_Temp2['sites'][j]['abc'][2]
