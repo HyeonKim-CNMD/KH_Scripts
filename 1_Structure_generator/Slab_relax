@@ -48,7 +48,31 @@ sed -i -e "s/.*ISIF.*/ISIF=2/" -e "s/.*NSW.*/NSW=0/" INCAR
 elif [[ $STEP == 3 ]]
 then
 ls
-python ~/KH_Scripts/1_Structure_generator/.Slab_Centrize\&Vacuum_adjust.py
+python ~/KH_Scripts/1_Structure_generator/.Slab_Layer_Test.py
+S_Lay=$(cat Temp.txt | awk '{print $1}')
+E_Lay=$(cat Temp.txt | awk '{print $2}')
+I_Lay=$(cat Temp.txt | awk '{print $3}')
+Filename1=$(cat Temp.txt | awk '{print $4}')
+Filename2=$(cat Temp.txt | awk '{print $5}')
+
+sed -i "12,200d" run.sh
+echo "for((i=$S_Lay;i<=$E_Lay;i=i+$I_Lay))
+do
+mkdir 2_Layer
+mkdir 2_Layer/\${i}
+cp $Filename1\${i}_\\$Filename2 POSCAR
+mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
+cp * 2_Layer/\${i}/.
+
+Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
+Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
+CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
+echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
+
+done
+" >> run.sh
+
+sed -i -e "s/.*ISIF.*/ISIF=2/" -e "s/.*NSW.*/NSW=200/" INCAR
 
 elif [[ $STEP == 4 ]]
 then
