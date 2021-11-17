@@ -150,6 +150,7 @@ Slab_Temp['energy'] = 0
 for k in range(Cen_Layer_U, 0, -1):
     Upper_Del = Cen_Layer_U - k
     Lower_Del = Cen_Layer_D + k
+    Slab_Temp=Slab_Temp
     Del = []
     for i in range(0, Upper_Del):
         Del = Del + list(Layer[i][1:len(Layer[i]):3])
