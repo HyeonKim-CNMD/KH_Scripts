@@ -146,7 +146,6 @@ for k in range(Cen_Layer_U, 0, -1):
     Upper_Del = Cen_Layer_U - k
     Lower_Del = Cen_Layer_D + k
     Slab_Temp2=Slab_Temp
-    print(Slab_Temp2)
     Del = []
     for i in range(0, Upper_Del):
         Del = Del + list(Layer[i][1:len(Layer[i]):3])
@@ -159,9 +158,9 @@ for k in range(Cen_Layer_U, 0, -1):
             if i == Slab_Temp2['sites'][j]['label']:
                 del (Slab_Temp2['sites'][j])
                 break
-
+    print(Slab_Temp)
     Slab_Temp2["miller_index"] = (1, 1, 1)
-    Slab_Temp2["oriented_unit_cell"] = Slab_Temp
+    Slab_Temp2["oriented_unit_cell"] = Bulk.as_dict()
     Slab_Temp2['shift'] = 0
     Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     Slab_Temp2['energy'] = 0
