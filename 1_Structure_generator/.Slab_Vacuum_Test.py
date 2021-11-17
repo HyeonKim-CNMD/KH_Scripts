@@ -161,7 +161,10 @@ Slab = Slab.get_sorted_structure(None, False)
 # 9. Vacuum distance 가 바뀌는 Slab Generation
 S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_Distance, End_Distance, Distance 증가를 입력해주세요 (ex. 8 14 1= 8~14까지 1[A] 씩 증가): ").split(" ")
 Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 입력해주세요: ")
-for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
+Filename1 = Slab_Name.split('g')[0] + "g"
+Filename2 = "_" + Slab_Name.split('g')[1].split('_')[1]
+os.system(f"echo '{S_Dis} {E_Dis} {I_Dis} {Filename1} {Filename2}' > Temp.txt")
+for k in range(int(S_Dis), int(E_Dis)+1, int(I_Dis)):
     Vacuum_height=float(k)
     Slab_Temp=Slab.as_dict()
     MinC, MaxC = surface.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
@@ -187,9 +190,6 @@ for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
             Slab_Temp['sites'][j]['abc'][2] = New_C
 
     print("======================================================================================================================================================")
-    Filename1 = Slab_Name.split('g')[0] + "g"
-    Filename2 = k
-    Filename3 = "_"+Slab_Name.split('g')[1].split('_')[1]
     Slab_Temp["miller_index"] = (1, 1, 1)
     Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
     Slab_Temp['shift'] = 0
@@ -202,4 +202,4 @@ for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
     print(Slab_Final)
 
     # 11. Slab 구조 파일의 재생성
-    structure.IStructure.to(Slab_Final, "poscar", filename=f"{Filename1}{Filename2}{Filename3}")
+    structure.IStructure.to(Slab_Final, "poscar", filename=f"{Filename1}{k}{Filename2}")

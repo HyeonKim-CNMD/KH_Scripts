@@ -20,6 +20,28 @@ elif [[ $STEP == 2 ]]
 then
 ls
 python ~/KH_Scripts/1_Structure_generator/.Slab_Vacuum_Test.py
+S_Dis=$(cat Temp.txt | awk '{print $1}')
+E_Dis=$(cat Temp.txt | awk '{print $2}')
+I_Dis=$(cat Temp.txt | awk '{print $3}')
+Filename1=$(cat Temp.txt | awk '{print $4}')
+Filename2=$(cat Temp.txt | awk '{print $5}')
+
+sed -i "12,200d" run.sh
+echo "for((i=$S_Dis;i<=$E_Dis;i=i+$I_Dis))
+do
+mkdir 1_Vacuum
+mkdir 1_Vacuum/\${i}
+cp $Filename1\${i}$Filename2 POSCAR
+mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
+cp * 1_Vacuum/\${i}/.
+done
+
+Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
+Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
+CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
+echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
+" >> run.sh
+
 
 elif [[ $STEP == 3 ]]
 then
