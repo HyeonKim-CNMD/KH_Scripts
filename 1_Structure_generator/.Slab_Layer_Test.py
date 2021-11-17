@@ -139,7 +139,8 @@ for i in Sel:
 # 8. Original Layer ~ 1 Layer 까지 Slab Generation
 Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 입력해주세요: ")
 Filename1 = Slab_Name.split('m')[0] + "m"
-Filename3 = "_" + Slab_Name.split('m')[1].split('_')[1] + "_" + Slab_Name.split('m')[1].split('_')[2]
+Filename3 = "_" + Slab_Name.split('m')[1].split('_')[1]
+Filename4 = Slab_Name.split('m')[1].split('_')[2]
 os.system(f"echo '{2 * 1 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2} {Filename1} {Filename3}' > Temp.txt")
 
 for k in range(Cen_Layer_U, 0, -1):
@@ -200,4 +201,4 @@ for k in range(Cen_Layer_U, 0, -1):
     print(Slab_Final)
 
     # 11. Slab 구조 파일의 재생성
-    structure.IStructure.to(Slab_Final, "poscar", filename=f"{Filename1}{Filename2}{Filename3}")
+    structure.IStructure.to(Slab_Final, "poscar", filename=f"{Filename1}{Filename2}{Filename3}_{Filename4}")

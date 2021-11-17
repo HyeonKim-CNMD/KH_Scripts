@@ -54,13 +54,14 @@ E_Lay=$(cat Temp.txt | awk '{print $2}')
 I_Lay=$(cat Temp.txt | awk '{print $3}')
 Filename1=$(cat Temp.txt | awk '{print $4}')
 Filename2=$(cat Temp.txt | awk '{print $5}')
+Filename3=$(cat Temp.txt | awk '{print $6}')
 
 sed -i "12,200d" run.sh
 echo "for((i=$S_Lay;i<=$E_Lay;i=i+$I_Lay))
 do
 mkdir 2_Layer
 mkdir 2_Layer/\${i}
-cp $Filename1\${i}_\\$Filename2 POSCAR
+cp $Filename1\${i}$Filename2_\\$Filename3 POSCAR
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 cp * 2_Layer/\${i}/.
 
