@@ -161,7 +161,7 @@ S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_D
 for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
     Vacuum_height=float(k)
     Slab_Temp2=Slab_Temp
-    MinC, MaxC = surface.get_slab_regions(Slab_Temp)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
+    MinC, MaxC = surface.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
     Caxis = Slab_Temp2['lattice']['c']
     Slab_Height = (MaxC - MinC) * Caxis
     print(f'Slab height Calculated: {Slab_Height}\n')
