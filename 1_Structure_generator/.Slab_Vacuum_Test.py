@@ -146,9 +146,9 @@ print("=========================================================================
 Upper_Del, Lower_Del=map(int, input("남겨둘 Layer 의 범위를 입력해주세요 (ex. Layer 13 ~ Layer 26 보존=13 26 입력): ").split())
 Del=[]
 for i in range(0,Upper_Del):
-Del=Del+list(Layer[i][1:len(Layer[i]):3])
+    Del=Del+list(Layer[i][1:len(Layer[i]):3])
 for i in range(Lower_Del+1,len(Layer)):
-Del=Del+list(Layer[i][1:len(Layer[i]):3])
+    Del=Del+list(Layer[i][1:len(Layer[i]):3])
 print(f"지워지게 될 Element 위치: {Del}")
 for i in Del:
 for j in range(0,len(Slab_Temp['sites'])):
