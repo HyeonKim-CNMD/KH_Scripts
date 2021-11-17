@@ -158,6 +158,7 @@ for i in Del:
 
 # 9. Vacuum distance 가 바뀌는 Slab Generation
 S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_Distance, End_Distance, Distance 증가를 입력해주세요 (ex. 3 5 1= 3~5 를 1[A] 씩 증가): ").split(" ")
+Cell_type=input("Full cell 의 경우 F, Half cell 의 경우 H 를 입력하주세요: ")
 for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
     Vacuum_height=float(k)
     Slab_Temp2=Slab_Temp
