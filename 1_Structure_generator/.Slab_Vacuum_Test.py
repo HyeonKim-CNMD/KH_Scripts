@@ -156,18 +156,7 @@ for i in Del:
     		del(Slab_Temp['sites'][j])
     		break
 
-##9. 수정된 Slab을 이름을 입력받아 생성
-print("======================================================================================================================================================")
-Filename=input(f"출력할 파일의 이름을 입력해주세요. (기존 파일명={Slab_Name}) (Enter 키 입력시 기존 파일 덮어 씌움): ")
-if Filename=="":
-	Filename=Slab_Name
-Slab_Temp["miller_index"]=(1, 1, 1)
-Slab_Temp["oriented_unit_cell"]=Bulk.as_dict()
-Slab_Temp['shift']=0
-Slab_Temp['scale_factor']=np.array([[1, 0, 0],[0, 1, 0],[0, 0, 1]])
-Slab_Temp['energy']=0
-
-# 8. Vacuum distance 가 바뀌는 Slab Generation
+# 9. Vacuum distance 가 바뀌는 Slab Generation
 S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_Distance, End_Distance, Distance 증가를 입력해주세요 (ex. 3 5 1= 3~5 를 1[A] 씩 증가): ").split(" ")
 for k in range(int(S_Dis), int(S_Dis), int(S_Dis)):
     Vacuum_height=float(k)
