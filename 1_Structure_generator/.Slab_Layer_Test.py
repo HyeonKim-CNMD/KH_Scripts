@@ -1,5 +1,6 @@
 import os
 import re
+from math import sqrt
 from math import gcd
 from pymatgen.core import surface
 from pymatgen.core import structure
@@ -140,11 +141,6 @@ Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 �
 Filename1 = Slab_Name.split('m')[0] + "m"
 Filename3 = "_" + Slab_Name.split('m')[1].split('_')[1] + "_" + Slab_Name.split('m')[1].split('_')[2]
 os.system(f"echo '{2 * 1 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2} {Filename1} {Filename3}' > Temp.txt")
-Slab_Temp["miller_index"] = (1, 1, 1)
-Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
-Slab_Temp['shift'] = 0
-Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-Slab_Temp['energy'] = 0
 
 for k in range(Cen_Layer_U, 0, -1):
     Upper_Del = Cen_Layer_U - k
@@ -175,9 +171,9 @@ for k in range(Cen_Layer_U, 0, -1):
     C_ratio = float(C_OriLen / C_NewLen)  # 이동시켜야할 C axis 비율 저장
     print(f'C_OriLen: {C_OriLen} Slab height Calcutated: {Slab_Height} C_NewLen: {C_NewLen} \n')
 
-    Slab_Temp2['lattice']['matrix'][2][0] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp2['lattice']['matrix'][2][1] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp2['lattice']['matrix'][2][2] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Temp2['lattice']['matrix'][2][0] = sqrt(C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Temp2['lattice']['matrix'][2][1] = sqrt(C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Temp2['lattice']['matrix'][2][2] = sqrt(C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
     if Cell_type == "N":  # Half Cell 의 경우
         for j in range(0, len(Slab_Temp2['sites'])):
             Old_C = Slab_Temp2['sites'][j]['abc'][2]
@@ -192,6 +188,11 @@ for k in range(Cen_Layer_U, 0, -1):
     # 9. 수정된 Slab을 이름을 입력받아 생성
     print("======================================================================================================================================================")
     Filename2 = 2 * k + len(Cen_Layer)
+    Slab_Temp2["miller_index"] = (1, 1, 1)
+    Slab_Temp2["oriented_unit_cell"] = Bulk.as_dict()
+    Slab_Temp2['shift'] = 0
+    Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    Slab_Temp2['energy'] = 0
 
     # 10. 수정된 Dict 를 가지고 Slab 재 생성
     Slab_Final = surface.Slab.from_dict(Slab_Temp2)
