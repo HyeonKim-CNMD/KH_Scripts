@@ -162,7 +162,7 @@ Slab = Slab.get_sorted_structure(None, False)
 S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_Distance, End_Distance, Distance 증가를 입력해주세요 (ex. 8 14 1= 8~14까지 1[A] 씩 증가): ").split(" ")
 Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 입력해주세요: ")
 Filename1 = Slab_Name.split('g')[0] + "g"
-Filename2 = "_" + Slab_Name.split('g')[1].split('_')[1]
+Filename2 = Slab_Name.split('g')[1].split('_')[1]
 os.system(f"echo '{S_Dis} {E_Dis} {I_Dis} {Filename1} {Filename2}' > Temp.txt")
 for k in range(int(S_Dis), int(E_Dis)+1, int(I_Dis)):
     Vacuum_height=float(k)
@@ -202,4 +202,4 @@ for k in range(int(S_Dis), int(E_Dis)+1, int(I_Dis)):
     print(Slab_Final)
 
     # 11. Slab 구조 파일의 재생성
-    structure.IStructure.to(Slab_Final, "poscar", filename=f"{Filename1}{k}{Filename2}")
+    structure.IStructure.to(Slab_Final, "poscar", filename=f"{Filename1}{k}_{Filename2}")

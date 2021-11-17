@@ -31,7 +31,7 @@ echo "for((i=$S_Dis;i<=$E_Dis;i=i+$I_Dis))
 do
 mkdir 1_Vacuum
 mkdir 1_Vacuum/\${i}
-cp $Filename1\${i}\\$Filename2 POSCAR
+cp $Filename1\${i}_\\$Filename2 POSCAR
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 cp * 1_Vacuum/\${i}/.
 done
