@@ -151,10 +151,10 @@ for i in range(Lower_Del+1,len(Layer)):
     Del=Del+list(Layer[i][1:len(Layer[i]):3])
 print(f"지워지게 될 Element 위치: {Del}")
 for i in Del:
-for j in range(0,len(Slab_Temp['sites'])):
-	if i == Slab_Temp['sites'][j]['label']:
-		del(Slab_Temp['sites'][j])
-		break
+    for j in range(0,len(Slab_Temp['sites'])):
+    	if i == Slab_Temp['sites'][j]['label']:
+    		del(Slab_Temp['sites'][j])
+    		break
 
 ##9. 수정된 Slab을 이름을 입력받아 생성
 print("======================================================================================================================================================")
