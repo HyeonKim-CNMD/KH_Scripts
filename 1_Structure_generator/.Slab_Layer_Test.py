@@ -159,6 +159,11 @@ for k in range(Cen_Layer_U, 0, -1):
                 del (Slab_Temp2['sites'][j])
                 break
 
+    Slab_Temp2["miller_index"] = (1, 1, 1)
+    Slab_Temp2["oriented_unit_cell"] = Bulk.as_dict()
+    Slab_Temp2['shift'] = 0
+    Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    Slab_Temp2['energy'] = 0
     Slab = surface.Slab.from_dict(Slab_Temp2)
     Slab = Slab.get_sorted_structure(None, False)
 
@@ -188,11 +193,7 @@ for k in range(Cen_Layer_U, 0, -1):
     # 9. 수정된 Slab을 이름을 입력받아 생성
     print("======================================================================================================================================================")
     Filename2 = 2 * k + len(Cen_Layer)
-    Slab_Temp2["miller_index"] = (1, 1, 1)
-    Slab_Temp2["oriented_unit_cell"] = Bulk.as_dict()
-    Slab_Temp2['shift'] = 0
-    Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    Slab_Temp2['energy'] = 0
+
 
     # 10. 수정된 Dict 를 가지고 Slab 재 생성
     Slab_Final = surface.Slab.from_dict(Slab_Temp2)
