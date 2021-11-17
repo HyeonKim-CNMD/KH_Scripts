@@ -338,12 +338,13 @@ mkdir 1_ENCUT_Test/\${i}
 sed -i \"s/ENCUT.*/ENCUT=\${i}/\" INCAR
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 cp * 1_ENCUT_Test/\${i}/.
-done
 
 Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
 Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
 CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
 echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
+
+done
 " >> run.sh
 
 sed -i -e "s/NSW.*/NSW=0/" INCAR
@@ -369,12 +370,13 @@ mkdir 2_KPT_Test/\$Fold
 
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 cp * 2_KPT_Test/\$Fold/.
-done
 
 Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
 Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
 CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
 echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
+
+done
 " >> run.sh
 
 sed -i -e "s/NSW.*/NSW=100/" -e "s/IBRION.*/IBRION=2/" -e "s/ISIF.*/ISIF=3/" INCAR
@@ -438,12 +440,13 @@ mkdir DOS_Conv/\$Fold
 
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 cp * DOS_Conv/\$Fold/.
-done
 
 Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
 Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
 CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
 echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
+
+done
 " >> run.sh
 
 sed -i -e "s/.*ICHARG.*/ICHARG=11/" -e "s/.*LMAXMIX.*/LMAXMIX=${LMAXMIX}/" -e "s/.*NSW.*/NSW=00/" -e "s/.*LORBIT.*/LORBIT=11/" -e "s/.*EMIN.*/EMIN=${EMIN}/" -e "s/.*EMAX.*/EMAX=${EMAX}/" -e "s/.*NEDOS.*/NEDOS=${NEDOS}/" -e "s/.*ISMEAR.*/ISMEAR=-5/" -e "s/.*LCHARG.*/LCHARG=FALSE/" INCAR

@@ -34,14 +34,16 @@ mkdir 1_Vacuum/\${i}
 cp $Filename1\${i}_\\$Filename2 POSCAR
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 cp * 1_Vacuum/\${i}/.
-done
 
 Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
 Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
 CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
 echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
+
+done
 " >> run.sh
 
+sed -i -e "s/.*ISIF.*/ISIF=2/" -e "s/.*NSW.*/NSW=0/" INCAR
 
 elif [[ $STEP == 3 ]]
 then
