@@ -139,13 +139,12 @@ for i in Sel:
 Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 입력해주세요: ")
 Filename1 = Slab_Name.split('m')[0] + "m"
 Filename3 = "_" + Slab_Name.split('m')[1].split('_')[1] + "_" + Slab_Name.split('m')[1].split('_')[2]
-Vacuum = int(Slab_Name.split('g')[1].split('_')[0])
-os.system(f"echo '{2 * 0 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2} {Filename1} {Filename3}' > Temp.txt")
+Vacuum = float(Slab_Name.split('g')[1].split('_')[0])
+os.system(f"echo '{2 * 1 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2} {Filename1} {Filename3}' > Temp.txt")
 
 for k in range(Cen_Layer_U, 0, -1):
     Upper_Del = Cen_Layer_U - k
     Lower_Del = Cen_Layer_D + k
-    print(f"{k}: 0 {Upper_Del} {Lower_Del + 1} {len(Layer)}")
     Del = []
     for i in range(0, Upper_Del):
         Del = Del + list(Layer[i][1:len(Layer[i]):3])
@@ -173,7 +172,7 @@ for k in range(Cen_Layer_U, 0, -1):
     Caxis = Slab.as_dict()['lattice']['c']
     Slab_Height = (MaxC - MinC) * Caxis
     print(f'Slab height Calcutated: {Slab_Height}\n')
-    Slab_Temp = Slab.as_dict()
+
     C_OriLen = Slab_Temp['lattice']['c']
     C_NewLen = float(Slab_Height + Vacuum_height)
     Slab_Temp['lattice']['matrix'][2][0] = (C_NewLen / C_OriLen) * Slab_Temp['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
