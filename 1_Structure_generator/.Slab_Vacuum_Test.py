@@ -184,7 +184,7 @@ for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
         for j in range(0, len(Slab_Temp['sites'])):
             Old_C = Slab_Temp['sites'][j]['abc'][2]
             New_C = 0.5 + ((Old_C - 0.5) * C_ratio)
-            Slab_Temp2['sites'][j]['abc'][2] = New_C
+            Slab_Temp['sites'][j]['abc'][2] = New_C
 
     print("======================================================================================================================================================")
     Filename1 = Slab_Name.split('g')[0] + "g"
