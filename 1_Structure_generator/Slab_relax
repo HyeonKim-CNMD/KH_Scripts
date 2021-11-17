@@ -61,7 +61,7 @@ echo "for((i=$S_Lay;i<=$E_Lay;i=i+$I_Lay))
 do
 mkdir 2_Layer
 mkdir 2_Layer/\${i}
-cp $Filename1\${i}$Filename2_\\$Filename3 POSCAR
+cp $Filename1\${i}${Filename2}_\\$Filename3 POSCAR
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 cp * 2_Layer/\${i}/.
 
