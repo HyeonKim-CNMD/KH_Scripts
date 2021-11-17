@@ -145,7 +145,6 @@ os.system(f"echo '{2 * 1 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2
 for k in range(Cen_Layer_U, 0, -1):
     Upper_Del = Cen_Layer_U - k
     Lower_Del = Cen_Layer_D + k
-    Slab_Inter=Slab_Temp
     Del = []
     for i in range(0, Upper_Del):
         Del = Del + list(Layer[i][1:len(Layer[i]):3])
@@ -154,20 +153,21 @@ for k in range(Cen_Layer_U, 0, -1):
         Del = Del + list(Layer[i][1:len(Layer[i]):3])
 
     for i in Del:
-        for j in range(0, len(Slab_Inter['sites'])):
-            if i == Slab_Inter['sites'][j]['label']:
-                del (Slab_Inter['sites'][j])
+        for j in range(0, len(Slab_Temp['sites'])):
+            if i == Slab_Temp['sites'][j]['label']:
+                del (Slab_Temp['sites'][j])
                 break
 
-    Slab_Inter["miller_index"] = (1, 1, 1)
-    Slab_Inter["oriented_unit_cell"] = Bulk.as_dict()
-    Slab_Inter['shift'] = 0
-    Slab_Inter['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    Slab_Inter['energy'] = 0
-    Slab = surface.Slab.from_dict(Slab_Inter)
+    Slab_Temp["miller_index"] = (1, 1, 1)
+    Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
+    Slab_Temp['shift'] = 0
+    Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    Slab_Temp['energy'] = 0
+    Slab = surface.Slab.from_dict(Slab_Temp)
     Slab = Slab.get_sorted_structure(None, False)
 
     # 9. Vacuum level 재조정하기
+    Slab_Inter=Slab.as_dict()
     Vacuum_height=float(Slab_Name.split('g')[1].split('_')[0])
     MinC, MaxC = surface.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
     C_OriLen = Slab_Inter['lattice']['c']
