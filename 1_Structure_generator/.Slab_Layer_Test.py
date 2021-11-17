@@ -141,6 +141,11 @@ Filename1 = Slab_Name.split('m')[0] + "m"
 Filename3 = "_" + Slab_Name.split('m')[1].split('_')[1] + "_" + Slab_Name.split('m')[1].split('_')[2]
 Vacuum = float(Slab_Name.split('g')[1].split('_')[0])
 os.system(f"echo '{2 * 1 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2} {Filename1} {Filename3}' > Temp.txt")
+Slab_Temp["miller_index"] = (1, 1, 1)
+Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
+Slab_Temp['shift'] = 0
+Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+Slab_Temp['energy'] = 0
 
 for k in range(Cen_Layer_U, 0, -1):
     Upper_Del = Cen_Layer_U - k
@@ -158,18 +163,13 @@ for k in range(Cen_Layer_U, 0, -1):
                 del (Slab_Temp['sites'][j])
                 break
 
-    Slab_Temp["miller_index"] = (1, 1, 1)
-    Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
-    Slab_Temp['shift'] = 0
-    Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    Slab_Temp['energy'] = 0
     Slab = surface.Slab.from_dict(Slab_Temp)
     Slab = Slab.get_sorted_structure(None, False)
 
     # 9. Vacuum level 재조정하기
     Vacuum_height=Vacuum
     MinC, MaxC = surface.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
-    Caxis = Slab.as_dict()['lattice']['c']
+    Caxis = Slab_Temp['lattice']['c']
     Slab_Height = (MaxC - MinC) * Caxis
     print(f'Slab height Calcutated: {Slab_Height}\n')
 
@@ -193,13 +193,6 @@ for k in range(Cen_Layer_U, 0, -1):
     # 9. 수정된 Slab을 이름을 입력받아 생성
     print("======================================================================================================================================================")
     Filename2 = 2 * k + len(Cen_Layer)
-
-    Slab_Temp["miller_index"] = (1, 1, 1)
-
-    Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
-    Slab_Temp['shift'] = 0
-    Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    Slab_Temp['energy'] = 0
 
     # 10. 수정된 Dict 를 가지고 Slab 재 생성
     Slab_Final = surface.Slab.from_dict(Slab_Temp)
