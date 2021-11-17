@@ -139,7 +139,6 @@ for i in Sel:
 Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 입력해주세요: ")
 Filename1 = Slab_Name.split('m')[0] + "m"
 Filename3 = "_" + Slab_Name.split('m')[1].split('_')[1] + "_" + Slab_Name.split('m')[1].split('_')[2]
-Vacuum = float(Slab_Name.split('g')[1].split('_')[0])
 os.system(f"echo '{2 * 1 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2} {Filename1} {Filename3}' > Temp.txt")
 Slab_Temp["miller_index"] = (1, 1, 1)
 Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
@@ -168,18 +167,17 @@ for k in range(Cen_Layer_U, 0, -1):
     Slab = Slab.get_sorted_structure(None, False)
 
     # 9. Vacuum level 재조정하기
-    Vacuum_height=Vacuum
+    Vacuum_height=float(Slab_Name.split('g')[1].split('_')[0])
     MinC, MaxC = surface.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
-    Caxis = Slab_Temp2['lattice']['c']
-    Slab_Height = (MaxC - MinC) * Caxis
-    print(f'Slab height Calcutated: {Slab_Height}\n')
-
     C_OriLen = Slab_Temp2['lattice']['c']
+    Slab_Height = (MaxC - MinC) * C_OriLen
     C_NewLen = float(Slab_Height + Vacuum_height)
+    C_ratio = float(C_OriLen / C_NewLen)  # 이동시켜야할 C axis 비율 저장
+    print(f'C_OriLen: {C_OriLen} Slab height Calcutated: {Slab_Height} C_NewLen: {C_NewLen} \n')
+
     Slab_Temp2['lattice']['matrix'][2][0] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
     Slab_Temp2['lattice']['matrix'][2][1] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
     Slab_Temp2['lattice']['matrix'][2][2] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
-    C_ratio = float(C_OriLen / C_NewLen)  # 이동시켜야할 C axis 비율 저장
     if Cell_type == "N":  # Half Cell 의 경우
         for j in range(0, len(Slab_Temp2['sites'])):
             Old_C = Slab_Temp2['sites'][j]['abc'][2]

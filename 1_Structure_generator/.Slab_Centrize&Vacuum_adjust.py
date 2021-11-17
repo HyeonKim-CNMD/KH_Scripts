@@ -27,13 +27,12 @@ if not Vacuum_height=="" or Vacuum_height=="N":
   
     #4. Slab Height 구하기
     MinC,MaxC=surface.get_slab_regions(Slab)[0] #Slab 영역의 C-coordinate 최소/최대를 출력
-    Caxis=Slab.as_dict()['lattice']['c']
-    Slab_Height=(MaxC-MinC)*Caxis
+    C_OriLen=Slab.as_dict()['lattice']['c']
+    Slab_Height=(MaxC-MinC)*C_OriLen
     print(f'Slab height Calcutated: {Slab_Height}\n')
 
     #5. Lattice from Slab Class -> Vacuum height 수정
     Slab_Temp=Slab.as_dict()
-    C_OriLen=Slab_Temp['lattice']['c']
     C_NewLen=float(Slab_Height+Vacuum_height)
     Slab_Temp['lattice']['matrix'][2][0]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][0] #Angstrom 기반의 Vacuum Height 재설정
     Slab_Temp['lattice']['matrix'][2][1]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][1] #Angstrom 기반의 Vacuum Height 재설정
