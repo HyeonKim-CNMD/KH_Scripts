@@ -36,14 +36,11 @@ for i in range(0, len(Elements) - 1):
         Layer.append(Elements[i + 1])
 
 # 4. Layer 단위로 원소를 출력
-print(
-    "======================================================================================================================================================")
+print("======================================================================================================================================================")
 print("Layers of the Slab Structure")
-print(
-    "======================================================================================================================================================")
+print("======================================================================================================================================================")
 print("{0:<10} | {1:<100}".format("Layer Idx", "Element, Element number, C"))
-print(
-    "------------------------------------------------------------------------------------------------------------------------------------------------------")
+print("------------------------------------------------------------------------------------------------------------------------------------------------------")
 for i in range(0, len(Layer)):
     print("{0:<10} | {1:<100}".format(f"Layer {i}", str(Layer[i])))
 
@@ -67,11 +64,9 @@ else:
 FU = [int(x / Num_FU) for x in FU]
 
 # 6. 1 FU 를 기준으로 Fixed Layer 표시
-print(
-    "======================================================================================================================================================")
+print("======================================================================================================================================================")
 Cen_Layer = input("대칭성에 주의 하여 Slab Center Layer 의 Index 를 입력해주세요(ex. layer 26=26, Layer 26 + Layer 27 =26 27: ").split()
-print(
-    "======================================================================================================================================================")
+print("======================================================================================================================================================")
 Cen_Layer_U = int(Cen_Layer[0])
 Cen_Layer_D = int(Cen_Layer[-1])
 
@@ -98,7 +93,6 @@ for i in range(1, Max + 1):
                     FU_Layer[j] = i
             else:
                 break
-
 print(FU_Layer)
 
 print("======================================================================================================================================================")
@@ -117,7 +111,7 @@ for i in range(0, len(Layer)):
             elif j == Num_FU - 1:
                 print("{0:<10} | {1:<100}".format(f"Layer {i}", str(Layer[i])))
 
-            # 7. 모든 Layer 에 Selective Dynamics 추가 및 Fixed Layer 의 고정
+# 7. 모든 Layer 에 Selective Dynamics 추가 및 Fixed Layer 의 고정
 print("======================================================================================================================================================")
 Temp = input("고정할 Layer 의 범위를 입력해주세요. (ex. Layer 13 ~ Layer 26 고정=13 26 입력) (Enter 키 입력시 1FU Layer Fix): ")
 if Temp == "":
@@ -157,7 +151,7 @@ for i in Del:
             break
 
 # 9. Vacuum distance 가 바뀌는 Slab Generation
-S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_Distance, End_Distance, Distance 증가를 입력해주세요 (ex. 3 5 1= 3~5 를 1[A] 씩 증가): ").split(" ")
+S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_Distance, End_Distance, Distance 증가를 입력해주세요 (ex. 8 14 1= 8~14까지 1[A] 씩 증가): ").split(" ")
 Cell_type=input("Full cell 의 경우 F, Half cell 의 경우 H 를 입력하주세요: ")
 for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
     Vacuum_height=float(k)
@@ -166,6 +160,7 @@ for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
     Caxis = Slab_Temp2['lattice']['c']
     Slab_Height = (MaxC - MinC) * Caxis
     print(f'Slab height Calculated: {Slab_Height}\n')
+
     C_OriLen = Slab_Temp2['lattice']['c']
     C_NewLen = float(Slab_Height + Vacuum_height)
     Slab_Temp2['lattice']['matrix'][2][0] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
@@ -182,18 +177,21 @@ for k in range(int(S_Dis), int(E_Dis), int(I_Dis)):
             Old_C = Slab_Temp2['sites'][j]['abc'][2]
             New_C = Old_C * C_ratio
             Slab_Temp2['sites'][j]['abc'][2] = New_C
+
     print("======================================================================================================================================================")
     Filename1 = Slab_Name.split('g')[0] + "g"
     Filename2 = k
-    Filename3 = Slab_Name.split('g')[1].split('_')[1]
+    Filename3 = "_"+Slab_Name.split('g')[1].split('_')[1]
     Slab_Temp2["miller_index"] = (1, 1, 1)
     Slab_Temp2["oriented_unit_cell"] = Bulk.as_dict()
     Slab_Temp2['shift'] = 0
     Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     Slab_Temp2['energy'] = 0
+
     # 10. 수정된 Dict 를 가지고 Slab 재 생성
     Slab_Final = surface.Slab.from_dict(Slab_Temp2)
     Slab_Final = Slab_Final.get_sorted_structure(None, False)
     print(Slab_Final)
+
     # 11. Slab 구조 파일의 재생성
     structure.IStructure.to(Slab_Final, "poscar", filename=f"{Filename1}{Filename2}{Filename3}")
