@@ -173,8 +173,7 @@ for k in range(Cen_Layer_U, 0, -1):
     C_OriLen = Slab_Temp2['lattice']['c']
     Slab_Height = (MaxC - MinC) * C_OriLen
     C_NewLen = float(Slab_Height + Vacuum_height)
-    C_ratio = float(sqrt(C_OriLen / C_NewLen))  # 이동시켜야할 C axis 비율 저장
-    print(f'C_OriLen: {C_OriLen} Slab height Calculated: {Slab_Height} C_NewLen: {C_NewLen} \n')
+    C_ratio = float(sqrt(C_OriLen / C_NewLen))  # 이시켜야할 C axis 비율 저장
 
     Slab_Temp2['lattice']['matrix'][2][0] = sqrt(C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
     Slab_Temp2['lattice']['matrix'][2][1] = sqrt(C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정

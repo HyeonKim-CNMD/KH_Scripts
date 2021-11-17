@@ -1,5 +1,6 @@
 import os
 import re
+from math import sqrt
 from math import gcd
 from pymatgen.core import surface
 from pymatgen.core import structure
@@ -168,16 +169,14 @@ for k in range(int(S_Dis), int(E_Dis)+1, int(I_Dis)):
     Vacuum_height=float(k)
     Slab_Temp=Slab.as_dict()
     MinC, MaxC = surface.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
-    Caxis = Slab_Temp['lattice']['c']
-    Slab_Height = (MaxC - MinC) * Caxis
-    print(f'Slab height Calculated: {Slab_Height}\n')
-
     C_OriLen = Slab_Temp['lattice']['c']
+    Slab_Height = (MaxC - MinC) * C_OriLen
     C_NewLen = float(Slab_Height + Vacuum_height)
-    Slab_Temp['lattice']['matrix'][2][0] = (C_NewLen / C_OriLen) * Slab_Temp['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp['lattice']['matrix'][2][1] = (C_NewLen / C_OriLen) * Slab_Temp['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp['lattice']['matrix'][2][2] = (C_NewLen / C_OriLen) * Slab_Temp['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
-    C_ratio = float(C_OriLen / C_NewLen)  # 이동시켜야할 C axis 비율 저장
+    C_ratio = float(sqrt(C_OriLen / C_NewLen))  # 이시켜야할 C axis 비율 저장
+
+    Slab_Temp['lattice']['matrix'][2][0] = sqrt(C_NewLen / C_OriLen) * Slab_Temp['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Temp['lattice']['matrix'][2][1] = sqrt(C_NewLen / C_OriLen) * Slab_Temp['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Temp['lattice']['matrix'][2][2] = sqrt(C_NewLen / C_OriLen) * Slab_Temp['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
     if Cell_type == "N":  # Half Cell 의 경우
         for j in range(0, len(Slab_Temp['sites'])):
             Old_C = Slab_Temp['sites'][j]['abc'][2]
