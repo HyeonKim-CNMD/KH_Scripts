@@ -145,7 +145,7 @@ os.system(f"echo '{2 * 1 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2
 for k in range(Cen_Layer_U, 0, -1):
     Upper_Del = Cen_Layer_U - k
     Lower_Del = Cen_Layer_D + k
-    Slab_Temp2=Slab_Temp
+    Slab_Inter=Slab_Temp
     Del = []
     for i in range(0, Upper_Del):
         Del = Del + list(Layer[i][1:len(Layer[i]):3])
@@ -154,40 +154,40 @@ for k in range(Cen_Layer_U, 0, -1):
         Del = Del + list(Layer[i][1:len(Layer[i]):3])
 
     for i in Del:
-        for j in range(0, len(Slab_Temp2['sites'])):
-            if i == Slab_Temp2['sites'][j]['label']:
-                del (Slab_Temp2['sites'][j])
+        for j in range(0, len(Slab_Inter['sites'])):
+            if i == Slab_Inter['sites'][j]['label']:
+                del (Slab_Inter['sites'][j])
                 break
-    print(Slab_Temp)
-    Slab_Temp2["miller_index"] = (1, 1, 1)
-    Slab_Temp2["oriented_unit_cell"] = Bulk.as_dict()
-    Slab_Temp2['shift'] = 0
-    Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    Slab_Temp2['energy'] = 0
-    Slab = surface.Slab.from_dict(Slab_Temp2)
+
+    Slab_Inter["miller_index"] = (1, 1, 1)
+    Slab_Inter["oriented_unit_cell"] = Bulk.as_dict()
+    Slab_Inter['shift'] = 0
+    Slab_Inter['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    Slab_Inter['energy'] = 0
+    Slab = surface.Slab.from_dict(Slab_Inter)
     Slab = Slab.get_sorted_structure(None, False)
 
     # 9. Vacuum level 재조정하기
     Vacuum_height=float(Slab_Name.split('g')[1].split('_')[0])
     MinC, MaxC = surface.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
-    C_OriLen = Slab_Temp2['lattice']['c']
+    C_OriLen = Slab_Inter['lattice']['c']
     Slab_Height = (MaxC - MinC) * C_OriLen
     C_NewLen = float(Slab_Height + Vacuum_height)
     C_ratio = float(C_OriLen / C_NewLen)  # 이시켜야할 C axis 비율 저장
 
-    Slab_Temp2['lattice']['matrix'][2][0] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp2['lattice']['matrix'][2][1] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp2['lattice']['matrix'][2][2] = (C_NewLen / C_OriLen) * Slab_Temp2['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Inter['lattice']['matrix'][2][0] = (C_NewLen / C_OriLen) * Slab_Inter['lattice']['matrix'][2][0]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Inter['lattice']['matrix'][2][1] = (C_NewLen / C_OriLen) * Slab_Inter['lattice']['matrix'][2][1]  # Angstrom 기반의 Vacuum Height 재설정
+    Slab_Inter['lattice']['matrix'][2][2] = (C_NewLen / C_OriLen) * Slab_Inter['lattice']['matrix'][2][2]  # Angstrom 기반의 Vacuum Height 재설정
     if Cell_type == "N":  # Half Cell 의 경우
-        for j in range(0, len(Slab_Temp2['sites'])):
-            Old_C = Slab_Temp2['sites'][j]['abc'][2]
+        for j in range(0, len(Slab_Inter['sites'])):
+            Old_C = Slab_Inter['sites'][j]['abc'][2]
             New_C = Old_C * C_ratio
-            Slab_Temp2['sites'][j]['abc'][2] = New_C
+            Slab_Inter['sites'][j]['abc'][2] = New_C
     else:  # Full_Cell 의 경우
-        for j in range(0, len(Slab_Temp2['sites'])):
-            Old_C = Slab_Temp2['sites'][j]['abc'][2]
+        for j in range(0, len(Slab_Inter['sites'])):
+            Old_C = Slab_Inter['sites'][j]['abc'][2]
             New_C = 0.5 + ((Old_C - 0.5) * C_ratio)
-            Slab_Temp2['sites'][j]['abc'][2] = New_C
+            Slab_Inter['sites'][j]['abc'][2] = New_C
 
     # 9. 수정된 Slab을 이름을 입력받아 생성
     print("======================================================================================================================================================")
@@ -195,7 +195,7 @@ for k in range(Cen_Layer_U, 0, -1):
 
 
     # 10. 수정된 Dict 를 가지고 Slab 재 생성
-    Slab_Final = surface.Slab.from_dict(Slab_Temp2)
+    Slab_Final = surface.Slab.from_dict(Slab_Inter)
     Slab_Final = Slab_Final.get_sorted_structure(None, False)
     print(Slab_Final)
 
