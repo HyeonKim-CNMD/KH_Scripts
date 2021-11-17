@@ -1,0 +1,100 @@
+#!/bin/sh
+if [[ $# -lt 1 ]] || [[ $1 == "-h" ]] || [[ $1 == "--help" ]]
+then
+    echo 'usage$ qfull {number of nodes}'
+    echo 'ex) qfull 1'
+    echo 'ex) qfull -n|--node n001-n002'
+    echo 'ex) qfull -n|--node "n001 n003"'
+    exit 1
+fi
+
+if [ $1 -eq $1 2>/dev/null ];then
+    num=$1
+    shift
+    node=""
+fi
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -n|--node)
+    node="$2"
+    shift
+    shift
+    ;;
+    *)
+    echo "Warning) there are inappropriate options."
+    shift
+    ;;
+esac
+done
+
+#1. 현재 서버의 IP 확인
+Now_IP="$(hostname -I | awk '{print $2}')"
+
+#1. CNMD 서버의 IP 정보와 대조
+Nature="141.223.167.64"
+Nucleus="141.223.167.155"
+#Quantum="141.223.167.40"
+
+if [[ "$Now_IP" == "$Nature" ]]
+then
+ppn=32
+core=8
+
+elif [[ "$Now_IP" == "$Nucleus" ]]
+then
+ppn=28
+core=7
+fi
+
+if [[ $node == "" ]];then
+    sed -i -e '/#PBS -q/c\#PBS -q full' -e "/nodes/c\#PBS -l nodes=${num}:ppn=${ppn}:full" run.sh
+#INCAR Change
+    if [[ $(grep KPAR INCAR) = "" ]]
+    then
+    echo "KPAR=" >> INCAR
+    fi
+    if [[ $(grep NCORE INCAR) = "" ]]
+    then
+    echo "NCORE=" >> INCAR
+    fi
+    if [[ $(grep NPAR INCAR) = "" ]]
+    then
+    echo "NPAR=" >> INCAR
+    fi
+
+    sed -i -e "s/KPAR.*/KPAR=$num/g" -e "s/NCORE.*/NCORE=${core}/g" -e "s/NPAR.*/NPAR=4/g" INCAR
+    echo "set nodes=${num}:ppn=${ppn}:full"
+    echo "set KPAR=$num:NCORE=${core}:NPAR=4"
+else
+    echo "You should check appropriate nodes to corresponding with queue."
+    if [[ $node =~ - ]];then
+        initial=`echo $node|cut -d'-' -f1|cut -d'n' -f2`
+        final=`echo $node|cut -d'-' -f2|cut -d'n' -f2`
+        nodes=`awk -v i=$initial -v f=$final '
+               BEGIN{
+                  for(n=i;n<f;n++){
+                     printf("n%03d:ppn=28:full+",n)
+                  }
+                  printf("n%03d:ppn=28:full",f)
+               }'`
+        echo "set nodes=$nodes"
+    else
+        nodes=""
+        for x in $node
+        do
+            if [[ $nodes == "" ]];then
+                nodes=`printf "%s" "${x}:ppn=28:full"`
+            else
+                nodes=`printf "%s%s" "$nodes" "+${x}:ppn=28:full"`
+            fi
+        done
+        echo "set nodes=$nodes"
+    fi
+    sed -i -e '/#PBS -q/c\#PBS -q full' -e "/nodes/c\#PBS -l nodes=${nodes}" run.sh
+fi
+
+exit 0

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+chgsplit.sh CHGCAR
+bader cf2
+if [ ! $(echo $?) == 0 ]
+then
+chgsplit.sh CHG
+bader cf2
+fi
+
+
+MAG=$( grep MAGMOM INCAR | cut -d'=' -f2 | sed "s/ /_/g")
+mv ACF.dat ACF_$MAG.dat
+cat ACF_$MAG.dat

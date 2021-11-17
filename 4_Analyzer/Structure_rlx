@@ -1,0 +1,25 @@
+#!/bin/sh
+
+echo "Structure RELAX                                                              "
+echo "===================================================================================================================================="
+Now=$(pwd)
+for d in $(find . -maxdepth 5 -type d | grep -v "Step")
+do
+if [[ -a $d/relax.out ]]
+then
+	cd $d
+        Dir_Name2=$(echo $d | rev | cut -d"/" -f1 | rev)
+        Dir_Name1=$(echo $d | rev | cut -d"/" -f2 | rev)
+        D=${Dir_Name1}/${Dir_Name2}
+	PSC=$(pyvasp.py symmetry -a spacegroup POSCAR | cut -d" " -f4-5)
+	PLP=$(vaspkit -task 601 | grep "Lattice Constants" | cut -d":" -f2)
+	PLA=$(vaspkit -task 601 | grep "Lattice Angles"| cut -d":" -f2)
+	CSC=$(pyvasp.py symmetry -a spacegroup CONTCAR | cut -d" " -f4-5)
+        CLP=$(vaspkit -task 608 | grep "Lattice Constants"| cut -d":" -f2)
+        CLA=$(vaspkit -task 608 | grep "Lattice Angles"| cut -d":" -f2)
+	echo "$D POS: $PSC $PLP $PLA CON: $CSC $CLP $CLA"	
+	cd $Now
+fi
+
+done
+

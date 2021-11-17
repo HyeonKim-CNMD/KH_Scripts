@@ -1,0 +1,55 @@
+#!/bin/sh
+#Scripte Name : pincar(Parallel INCAR)
+#Discription
+#: Parallel INCAR setting Code
+#Condition : There must be at least 1 work directory in current address
+
+directorys=`ls -l $(pwd) | grep "^d" | awk '{print $9}'`
+num_of_dirs=`echo $directorys | wc -w`
+
+read -p "INCAR Tag which you want to change : " Tag
+read -p "INCAR Tage arguments : " argu
+
+
+for i in $(seq $num_of_dirs)
+do
+dir_name=`echo $directorys | awk '{print $'"$i"'}'`
+line=`grep "$Tag" $(pwd)/$dir_name/INCAR`
+line1=`echo $line | awk '{print $1}'`
+line2=`echo $line | awk '{print $2}'`
+
+
+if [[ $line1 == *$Tag* ]];
+then
+removenote=`echo $line | sed "s/#//"`
+check=`echo $removenote | grep "=[ ^I][0-9][0-9]*[ ^I]" | awk '{print length($0)}'`
+
+if [[ $check -gt 0 ]]; then
+change=`echo $removenote | sed -e 's/\=[ ^I][0-9][0-9]*[ ^I]|/= '"$argu"'   |/'`
+else
+change=`echo $removenote | sed -e 's/=/= '"$argu"' /'`
+fi
+
+elif [[ $line2 == *$Tag* ]];
+then
+removenote=`echo $line | sed "s/#//"`
+check=`echo $removenote | grep "=[ ^I][0-9][0-9]*[ ^I]" | awk '{print length($0)}'`
+
+if [[ $check -gt 0 ]]; then
+change=`echo $removenote | sed -e 's/\=[ ^I][0-9][0-9]*[ ^I]|/= '"$argu"'   |/'`
+else
+change=`echo $removenote | sed -e 's/=/= '"$argu"' /'`
+fi
+
+fi
+
+echo "======================================================================="
+echo "Directory : " $dir_name
+echo "Before : " $line
+echo "After : " $change
+
+
+sed -i '/'"$Tag"'/c\'" $change"'' $(pwd)/$dir_name/INCAR
+done
+echo "======================================================================="
+exit 0

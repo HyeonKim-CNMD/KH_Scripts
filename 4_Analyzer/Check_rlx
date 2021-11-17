@@ -1,0 +1,29 @@
+#!/bin/sh
+
+echo "CHECK RELAX                                                              "
+echo "===================================================================================================================================="
+
+for d in $(find . -maxdepth 5 -type d | grep -v "Step")
+do
+if [[ -a $d/relax.out ]]
+then
+        Dir_Name2=$(echo $d | rev | cut -d"/" -f1 | rev)
+        Dir_Name1=$(echo $d | rev | cut -d"/" -f2 | rev)
+        D=${Dir_Name1}/${Dir_Name2}
+	M=$(grep "mag=" $d/relax.out -s -R -n | tail -1 | cut -d"=" -f5 )
+	E=$(grep "TOTEN" $d/OUTCAR -s -R -n | tail -1 | cut -d"=" -f2 | cut -d"e" -f1)
+	T=$(grep LOOP: $d/OUTCAR | awk 'BEGIN{time=0}{time+=$7}END{print time/NR}')
+	
+	if [[ $(grep "reached required accuracy - stopping structural energy minimisation" $d/relax.out) ]]
+	then
+		echo "$D : Relaxed!   $E Time: $T Mag= $M"  
+	elif [[ $(grep "ERROR" $d/relax.out) ]]||[[ $(grep "error" $d/relax.out) ]]
+	then
+		echo "$D : Un-relaxed $E Time: $T Mag= $M" 
+	else
+		echo "$D : Proceeding $E Time: $T Mag= $M" 
+	fi
+fi
+
+done
+

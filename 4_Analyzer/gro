@@ -1,0 +1,36 @@
+#!/bin/sh
+
+grep RMS OUTCAR | awk '{printf "%-4d %-4s %-8s %-4s %-8s\n", NR, "Max=", $5, "RMS=", $6}' > RMS.txt
+grep "mag=" relax.out | awk '{printf "%-2s %-14s %-3s %-14s %-3s %-12s %-4s %-10s\n", $2, $3, $4, $5, "dE" , $8, $9, $10}' > I_ENG.txt
+if [[ $(grep "RMM" relax.out) ]]
+then
+grep -B1 "mag=" relax.out | grep "RMM" | awk '{printf "%-4s %-3s %-2s %-19s %-3s %-12s\n", $1, $2, "E=", $3,"dE=", $4}' > E_ENG.txt
+elif [[ $(grep "CGA" relax.out) ]]
+then
+grep -B4 "mag=" relax.out | grep "CGA" | awk '{printf "%-4s %-3s %-2s %-19s %-3s %-12s\n", $1, $2, "E=", $3,"dE=", $4}' > E_ENG.txt
+elif [[ $(grep "DAV" relax.out) ]]
+then
+grep -B1 "mag=" relax.out | grep "DAV" | awk '{printf "%-4s %-3s %-2s %-19s %-3s %-12s\n", $1, $2, "E=", $3,"dE=", $4}' > E_ENG.txt
+fi
+
+paste RMS.txt I_ENG.txt E_ENG.txt > RMSENG.txt
+
+echo "=================================================================================================================================================================="
+echo "Num  [Ionic Relax Force        ]        [Ionic Relax Energy Iterations                                   ]      [Electronic Relax Energy Iterations         ]"
+echo "=================================================================================================================================================================="
+cat RMSENG.txt
+echo "=================================================================================================================================================================="
+if [[ $(grep "reached required accuracy - stopping structural energy minimisation" relax.out) ]]
+then
+echo " RESULT : reached required accuracy"
+elif [[ $(grep "ERROR" relax.out) ]]||[[ $(grep "error" relax.out) ]]
+then
+echo " RESULT : !!Relaxation Failed!!"
+else
+echo " RESULT : Relaxation proceeding"
+fi
+echo "=================================================================================================================================================================="
+
+
+rm RMS.txt I_ENG.txt E_ENG.txt RMSENG.txt
+

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+echo "======================================================================================================="
+read -p "Write your Job Name. (Enter=Last 2 Folder name) : " JOBNAME
+
+if [[ $JOBNAME = "" ]]
+then
+	Dir_Name2=$(pwd | rev | cut -d"/" -f1 | rev)
+	Dir_Name1=$(pwd | rev | cut -d"/" -f2 | rev)
+	Dir_Name=${Dir_Name1}_${Dir_Name2}
+	sed -i "s/#PBS -N.*/#PBS -N ${Dir_Name}/g" run.sh
+else
+	sed -i "s/#PBS -N.*/#PBS -N ${JOBNAME}/g" run.sh
+fi
+
+JOBNAME=$(grep "PBS -N" run.sh | awk '{print $3}')
+
+qsub run.sh
+
+echo "$JOBNAME   $(pwd)" >> ~/JOBHISTORY.txt
+
+exit 0

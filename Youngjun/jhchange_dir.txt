@@ -1,0 +1,52 @@
+#!/bin/sh
+#Script Name : jhchange_dir(Job History and Change Directory)
+#Discription
+#: Print Job History & Change Directory to Certain Location
+#Inspired by Kyung-Yeon Doh's and Hyeon Kim's jobinto Code
+
+#if [[ $# -gt 0 ]];then
+#   user=`whoami`
+#   num=$1
+#else
+#   user=`whoami`
+#   num=5
+#fi
+
+
+read -p "Enter the number of job history (anykey(default) = 5): " num
+
+if [[ $num -lt 1 ]] || [[ $num == $String22 ]]
+then
+num=5
+fi
+
+jobid=`tail -$num  ~/a.log/input.log | tac | awk -F"." '{print $1}'`
+jobaddre=`tail -$num ~/a.log/input.log | tac | awk '{print $2}'`
+whattime=`tail -$num ~/a.log/input.log | tac | awk '{print "["$3"] "$4"/"$5"/"$6}' | sed -e 's/ //'`
+
+#echo $jobid
+#echo $jobaddre
+#echo $whattime
+
+echo "-------------------"
+echo " [ `whoami` ]"
+echo "-------------------"
+echo " Num        Date, Time         JobID                           Address"
+echo "=====||======================||=======||======================================================"
+for i in $(seq $num)
+do
+timelist=`echo $whattime | awk '{print $'"$i"'}'`
+idlist=`echo $jobid | awk '{print $'"$i"'}'`
+addlist=`echo $jobaddre | awk '{print $'"$i"'}'`
+
+
+echo " " $i  " ||" $timelist  "||"  $idlist  "||" $addlist
+
+done
+echo "=============================================================================================="
+
+read -p "Enter n-th number to go. ex) 3 = 3th location : " LOC
+LOC=`echo $jobaddre | awk '{print $'"$LOC"'}'`
+
+#echo $LOC
+cd $LOC

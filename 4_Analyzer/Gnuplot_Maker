@@ -1,0 +1,350 @@
+#!/bin/sh
+
+#1. Plot Setting
+i=1
+Y2=0
+Plot=""
+BW=""
+while [[ 1 ]]
+do
+echo "1. [Plot Setting]==============================================================================="
+#1) Display Directory files
+ls
+
+#2) Check File name of Plot
+read -p "Please write $i-th plot's File name (Enter = done): " Filename 
+if [[ "$Filename" = "" ]]
+then
+break
+elif [[ ! -a $Filename ]]
+then
+echo "Please check the file name!"
+exit
+fi
+echo "================================================================================================"
+
+#3) Display the file
+head $Filename
+
+#4) Input X:Y and Legand Title
+read -p "Please write $i-th plot's X of $Filename: " X
+read -p "What is the type of X? (1: Num 2: Str): " XTYPE
+read -p "Please write $i-th plot's Y of $Filename: " Y
+if [[ $XTYPE -eq 1 ]]
+then
+XY="$X:$Y"
+else
+XY="$Y:xticlabels($X)"
+fi
+
+read -p "What y-axis is used? (1: 1st y-axis 2: 2nd y-axis): " Axis
+if [[ $Axis -eq 1 ]]
+then
+Axis="x1y1"
+elif [[ $Axis -eq 2 ]]
+then
+Axis="x1y2"
+Y2=1
+fi
+
+read -p "Please write $i-th plot's legend title: " TITLE
+
+#5) Choose Plotting Type
+read -p "Draw with (1:lines 2:points 3:lines+points 4:filledcurves 5:histogram): " W
+
+#5-1) Line type settings
+if [[ $W -eq 1 ]]||[[ $W -eq 3 ]]||[[ $W -eq 4 ]]
+then
+read -p "What is Line Width? (Recommand=3~4): " LW
+read -p "What is Line Color? (1: dark-pink 2:royalblue 3:sea-green 4:purple 5:coral else:write): " LC
+if [[ $LC -eq 1 ]]
+then
+LC="dark-pink"
+elif [[ $LC -eq 2 ]]
+then
+LC="royalblue"
+elif [[ $LC -eq 3 ]]
+then
+LC="sea-green"
+elif [[ $LC -eq 4 ]]
+then
+LC="purple"
+elif [[ $LC -eq 5 ]]
+then
+LC="coral"
+fi
+fi
+
+#5-2) Point type settings
+if [[ $W -eq 2 ]]||[[ $W -eq 3 ]]
+then
+read -p "What is Point Size? (Recommand=2~3): " PS
+read -p "What is Point Type? (7:Filled-Circle, 5:Filled-Box, 9:Filled-Tri, 71:Empty-Circle, 70:Empty-Box, 72:Empty-Tri): " PT
+fi
+
+#5-3) Histogram type settings
+if [[ $W -eq 5 ]]
+then
+
+if [[ "$BW"="" ]]
+then
+read -p "What is Width of Boxes? (1=no space): " BW
+echo "set boxwidth $BW" >> Gnuplot_Scripts.gnu
+read -p "What is Gap btw Boxes? (1=1 box-width): " BGAP
+echo "set style histogram clustered gap $BGAP" >> Gnuplot_Scripts.gnu
+fi
+
+read -p "What is Boxes Color? (1: dark-pink 2:royalblue 3:sea-green 4:purple 5:coral else:write): " LC
+if [[ $LC -eq 1 ]]
+then
+LC="dark-pink"
+elif [[ $LC -eq 2 ]]
+then
+LC="royalblue"
+elif [[ $LC -eq 3 ]]
+then
+LC="sea-green"
+elif [[ $LC -eq 4 ]]
+then
+LC="purple"
+elif [[ $LC -eq 5 ]]
+then
+LC="coral"
+fi
+read -p "What is the type of Boxes? (1: solid(fill) 2: Empty 3: Pattern): " F
+if [[ $F -eq 1 ]]
+then
+F="solid"
+BV=1
+elif [[ $F -eq 2 ]]
+then
+F="empty"
+BV=""
+elif [[ $F -eq 3 ]]
+then
+F="pattern"
+read -p "What is the pattern of Boxes?: " BV
+fi
+fi
+
+#6) Type Number to string
+if [[ $W -eq 1 ]]
+then
+W="lines"
+if [[ $i -eq 1 ]]
+then
+Plot+="plot '$Filename' using $XY axis $Axis title '$TITLE' with $W lw $LW lc '$LC'"
+else
+Plot+=", '$Filename' using $XY axis $Axis title '$TITLE' with $W lw $LW lc '$LC'"
+fi
+
+elif [[ $W -eq 2 ]]
+then
+W="points"
+if [[ $i -eq 1 ]]
+then
+Plot+="plot '$Filename' using $XY axis $Axis title '$TITLE' with $W ps $PS pt $PT"
+else
+Plot+=", '$Filename' using $XY axis $Axis title '$TITLE' with $W ps $PS pt $PT"
+fi
+
+elif [[ $W -eq 3 ]]
+then
+W="linespoints"
+if [[ $i -eq 1 ]]
+then
+Plot+="plot '$Filename' using $XY axis $Axis title '$TITLE' with $W lw $LW lc '$LC' ps $PS pt $PT"
+else
+Plot+=", '$Filename' using $XY axis $Axis title '$TITLE' with $W lw $LW lc '$LC' ps $PS pt $PT"
+fi
+
+elif [[ $W -eq 4 ]]
+then
+W="filledcurves"
+if [[ $i -eq 1 ]]
+then
+Plot+="plot '$Filename' using $XY axis $Axis title '$TITLE' with $W lw $LW lc '$LC'"
+else
+Plot+=", '$Filename' using $XY axis $Axis title '$TITLE' with $W lw $LW lc '$LC'"
+fi
+
+elif [[ $W -eq 5 ]]
+then
+W="histogram"
+if [[ $i -eq 1 ]]
+then
+Plot+="plot '$Filename' using $XY axis $Axis title '$TITLE' with $W fill $F $BV lc '$LC' "
+else
+Plot+=", '$Filename' using $XY axis $Axis title '$TITLE' with $W fill $F $BV lc '$LC'"
+fi
+
+fi
+
+i=$(expr $i + 1)
+done
+
+#8) Write plot settings to TXT
+echo $Plot >> Gnuplot_Scripts.gnu
+
+#2. Graph Settings
+echo "2. [Graph Setting]=============================================================================="
+#0) Default settings
+#0-1) Allow to put ^super/_{sub} indexes
+echo "set termopt enhanced" >> Gnuplot_Scripts.gnu
+
+#1) Set Graph Title
+read -p "Please write graph title: " TITLE
+if [[ ! "$TITLE" = "" ]]
+then
+echo "set title '$TITLE'" >> Gnuplot_Scripts.gnu
+fi
+
+#2) Set xlabel and ylabel
+read -p "Please write xlabel: " XLABEL
+echo "set xlabel '$XLABEL'" >> Gnuplot_Scripts.gnu
+read -p "Please write ylabel: " YLABEL
+echo "set ylabel '$YLABEL'" >> Gnuplot_Scripts.gnu
+if [[ $Y2 -eq 1 ]]
+then
+read -p "Please write y2label: " Y2LABEL
+echo "set y2label '$Y2LABEL'" >> Gnuplot_Scripts.gnu
+fi
+
+#3) Set xrange and yrange
+read -p "Please write xrange: (ex. -5:10, Enter=auto) " XRANGE
+if [[ "$XRANGE" = "" ]]
+then
+echo "set xrange[:]" >> Gnuplot_Scripts.gnu
+else
+echo "set xrange[$XRANGE]" >> Gnuplot_Scripts.gnu
+fi
+
+read -p "Please write yrange: (ex. -5:10, Enter=auto) " YRANGE
+if [[ "$YRANGE" = "" ]]
+then
+echo "set yrange[:]" >> Gnuplot_Scripts.gnu
+else
+echo "set yrange[$YRANGE]" >> Gnuplot_Scripts.gnu
+fi
+
+if [[ $Y2 -eq 1 ]]
+then
+read -p "Please write y2range: (ex. -5:10, Enter=auto) " Y2RANGE
+if [[ "$Y2RANGE" = "" ]]
+then
+echo "set y2range[:]" >> Gnuplot_Scripts.gnu
+else
+echo "set y2range[$Y2RANGE]" >> Gnuplot_Scripts.gnu
+fi
+echo "set y2tics" >> Gnuplot_Scripts.gnu
+echo "set ytics nomirror" >> Gnuplot_Scripts.gnu
+fi
+
+#4) Set xtics and ytics
+
+#5) Set Key Box and Box Position 
+read -p "Do we set the Labels on graph? (1:Yes, 2:No) " LABEL
+if [[ $LABEL -eq 1 ]]
+then
+LABEL="on"
+else
+LABEL="off"
+fi
+
+read -p "Does Labels on Outside or Inside? (1: Outside, 2: Inside) " INOUT
+if [[ $INOUT -eq 1 ]]
+then
+INOUT="outside"
+else
+INOUT="inside"
+fi
+
+read -p "Where do we locate Key along Vertical? (1:Top, 2:Bottom, 3:Center) " KEY_V
+if [[ $KEY_V -eq 1 ]]
+then
+KEY_V="top"
+elif [[ $KEY_V -eq 2 ]]
+then
+KEY_V="bottom"
+elif [[ $KEY_V -eq 3 ]]
+then
+KEY_V="center"
+fi
+
+read -p "Where do we locate Key along Horizontal? (1:Left, 2:Right, 3:Center) " KEY_H
+if [[ $KEY_H -eq 1 ]]
+then
+KEY_H="left"
+elif [[ $KEY_H -eq 2 ]]
+then
+KEY_H="right"
+elif [[ $KEY_H -eq 3 ]]
+then
+KEY_H="center"
+fi
+
+read -p "Do we set Key Box? (1:Yes 2:No) " KEY_B
+if [[ $KEY_B -eq 1 ]]
+then 
+KEY_B="box"
+elif [[ $KEY_B -eq 2 ]]
+then
+KEY_B="nobox"
+fi
+
+echo "set key $LABEL $INOUT $KEY_V $KEY_H $KEY_B" >> Gnuplot_Scripts.gnu
+
+#3. OUTPUT Setting
+echo "3. [OUTPUT Setting]============================================================================="
+#1) Terminal Type
+TERM="pngcairo"
+
+#2) Canvas Size
+read -p "What is the x:y ratio of Canvas size? (ex: 4:3=default=Enter) " Ratio
+if [[ "$Ratio" == "" ]]
+then
+Ratio="4:3"
+fi
+X_Ratio=$(echo $Ratio | cut -d":" -f1)
+Y_Ratio=$(echo $Ratio | cut -d":" -f2)
+
+read -p "Please write the canvas x size: (ex: 640=default=Enter) " X
+if [[ "$X" == "" ]]
+then
+X=640
+fi
+Y=$(echo " $X * ($Y_Ratio / $X_Ratio)" | bc -l)
+
+#3) Font type and Size
+read -p "Please write the font type: (1:Helvetica 2:Helvetica Bold 3:Times Roman 4:Times Bold)  " FONT_T
+if [[ $FONT_T -eq 1 ]]
+then
+FONT_T="Helvetica"
+elif [[ $FONT_T -eq 2 ]]
+then
+FONT_T="Helvetica Bold"
+elif [[ $FONT_T -eq 3 ]]
+then
+FONT_T="Times Roman"
+elif [[ $FONT_T -eq 4 ]]
+then
+FONT_T="Times Bold"
+fi
+read -p "Please write the font size: (recommand: >=14) " FONT_S 
+echo "set term $TERM size ${X},${Y} enhanced font '$FONT_T, $FONT_S'" >> Gnuplot_Scripts.gnu
+
+#4) OUTPUT Filename
+read -p "Please write the output filename without .png: " FILENAME 
+echo "set output '${FILENAME}.png'" >> Gnuplot_Scripts.gnu
+
+#5) replot
+echo "replot" >> Gnuplot_Scripts.gnu
+
+#6) Rename Gnu_scripts filename
+mv Gnuplot_Scripts.gnu ${FILENAME}.gnu
+
+#4. Launch Gnuplot
+echo "4. [Launch Gnuplot]============================================================================="
+echo "Now Launch Made Gnuplot_Scripts!!"
+gnuplot ${FILENAME}.gnu
+display ${FILENAME}.png

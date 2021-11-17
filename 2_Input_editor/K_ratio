@@ -1,0 +1,181 @@
+#!/bin/sh
+#custom Reciprocal lattice ratio print
+A=$(grep -A1 "length of vectors" OUTCAR | head -2 |tail -1 | awk '{printf $4}')
+B=$(grep -A1 "length of vectors" OUTCAR | head -2 |tail -1 | awk '{printf $5}')
+C=$(grep -A1 "length of vectors" OUTCAR | head -2 |tail -1 | awk '{printf $6}')
+
+read -p "What is infinite axis? ex) A/B/C/AB/AC/BC/ABC:" D
+echo "=============================================================================="
+
+
+if [ "$D" == "ABC" ]
+then
+    AA=1
+    BB=1
+    CC=1
+    echo "1-th | $AA : $BB : $CC | X"
+
+elif [ "$D" == "BC" ]
+then
+    #최솟값을 1씩 증가될 때의 비율을 반올림해서 출력
+    for((i=1;i<=40;i++))
+    do        
+	AA+=($i)
+        BB+=(1)
+        CC+=(1)
+        K+=($(echo "scale=4;$A/$i" | bc -l))
+        
+        echo "$i-th | ${AA[$i-1]} : ${BB[$i-1]} : ${CC[$i-1]} | ${K[$i-1]} [A-1]"
+    done
+
+elif [ "$D" == "AC" ]
+then
+    #최솟값을 1씩 증가될 때의 비율을 반올림해서 출력
+    for((i=1;i<=40;i++))
+    do        
+        AA+=(1)
+	BB+=($i)
+        CC+=(1)
+        K+=($(echo "scale=4;$B/$i" | bc -l))
+        
+        echo "$i-th | ${AA[$i-1]} : ${BB[$i-1]} : ${CC[$i-1]} | ${K[$i-1]} [A-1]"
+    done
+
+elif [ "$D" == "AB" ]
+then        
+    #최솟값을 1씩 증가될 때의 비율을 반올림해서 출력
+    for((i=1;i<=40;i++))
+    do        
+        AA+=(1)
+        BB+=(1)
+	CC+=($i)
+        K+=($(echo "scale=4;$C/$i" | bc -l))
+        
+        echo "$i-th | ${AA[$i-1]} : ${BB[$i-1]} : ${CC[$i-1]} | ${K[$i-1]} [A-1]"
+    done
+
+elif [ "$D" == "C" ]
+then
+    #A,B 중에 최소값 찾음
+    if [ $(echo "$A < $B" | bc -l) == 1 ]
+    then
+    min=$A
+    else
+    min=$B
+    fi
+    
+    #최솟값으로 나머지 두 값을 나눔
+    AMin=$(echo "scale=4;$A / $min"|bc -l)
+    BMin=$(echo "scale=4;$B / $min"|bc -l)
+        
+    #최솟값을 1씩 증가될 때의 비율을 반올림해서 출력
+    for((i=1;i<=40;i++))
+    do
+        AMul=$(echo "$AMin * $i" | bc -l)
+        BMul=$(echo "$BMin * $i" | bc -l)
+        
+        AA+=($(echo $(printf %.0f $AMul)))
+        BB+=($(echo $(printf %.0f $BMul)))
+        CC+=(1)
+        K+=($(echo "scale=4;$min/$i" | bc -l))
+        
+        echo "$i-th | ${AA[$i-1]} : ${BB[$i-1]} : ${CC[$i-1]} | ${K[$i-1]} [A-1]"
+    done
+
+elif [ "$D" == "B" ]
+then
+    #A,C 중에 최소값 찾음
+    if [ $(echo "$A < $C" | bc -l) == 1 ]
+    then
+    min=$A
+    else
+    min=$C
+    fi
+    
+    #최솟값으로 나머지 두 값을 나눔
+    AMin=$(echo "scale=4;$A / $min"|bc -l)
+    CMin=$(echo "scale=4;$C / $min"|bc -l)
+        
+    #최솟값을 1씩 증가될 때의 비율을 반올림해서 출력
+    for((i=1;i<=40;i++))
+    do
+        AMul=$(echo "$AMin * $i" | bc -l)
+        CMul=$(echo "$CMin * $i" | bc -l)
+        
+        AA+=($(echo $(printf %.0f $AMul)))
+        BB+=(1)
+        CC+=($(echo $(printf %.0f $CMul)))
+        K+=($(echo "scale=4;$min/$i" | bc -l))
+        
+        echo "$i-th | ${AA[$i-1]} : ${BB[$i-1]} : ${CC[$i-1]} | ${K[$i-1]} [A-1]"
+    done
+
+elif [ "$D" == "A" ]
+then
+    #B,C 중에 최소값 찾음
+    if [ $(echo "$B < $C" | bc -l) == 1 ]
+    then
+    min=$B
+    else
+    min=$C
+    fi
+    
+    #최솟값으로 나머지 두 값을 나눔
+    BMin=$(echo "scale=4;$B / $min"|bc -l)
+    CMin=$(echo "scale=4;$C / $min"|bc -l)
+        
+    #최솟값을 1씩 증가될 때의 비율을 반올림해서 출력
+    for((i=1;i<=40;i++))
+    do
+        BMul=$(echo "$BMin * $i" | bc -l)
+        CMul=$(echo "$CMin * $i" | bc -l)
+        
+        AA+=(1)
+        BB+=($(echo $(printf %.0f $BMul)))
+        CC+=($(echo $(printf %.0f $CMul)))
+        K+=($(echo "scale=4;$min/$i" | bc -l))
+        
+        echo "$i-th | ${AA[$i-1]} : ${BB[$i-1]} : ${CC[$i-1]} | ${K[$i-1]} [A-1]"
+    done
+
+else
+    #A,B,C 중에 최소값 찾음
+    if [ $(echo "$A < $B" | bc -l) == 1 ]
+    then
+    min=$A
+    else
+    min=$B
+    fi
+
+    if [ $(echo "$min < $C" | bc -l) == 1 ]
+    then
+    min=$min
+    else
+    min=$C
+    fi
+    
+    #최솟값으로 나머지 두 값을 나눔
+    AMin=$(echo "scale=4;$A / $min"|bc -l)
+    BMin=$(echo "scale=4;$B / $min"|bc -l)
+    CMin=$(echo "scale=4;$C / $min"|bc -l)
+        
+    #최솟값을 1씩 증가될 때의 비율을 반올림해서 출력
+    for((i=1;i<=40;i++))
+    do
+        AMul=$(echo "$AMin * $i" | bc -l)
+        BMul=$(echo "$BMin * $i" | bc -l)
+        CMul=$(echo "$CMin * $i" | bc -l)
+        
+        AA+=($(echo $(printf %.0f $AMul)))
+        BB+=($(echo $(printf %.0f $BMul)))
+        CC+=($(echo $(printf %.0f $CMul)))
+        K+=($(echo "scale=4;$min/$i" | bc -l))
+        
+        echo "$i-th | ${AA[$i-1]} : ${BB[$i-1]} : ${CC[$i-1]} | ${K[$i-1]} [A-1]"
+    done
+    
+fi
+
+read -p "Writh i-th number to change K_ratio: " Select
+sed -i "4s/.*/${AA[$Select-1]} ${BB[$Select-1]} ${CC[$Select-1]}/g" KPOINTS
+

@@ -1,0 +1,18 @@
+#!/bin/sh
+echo "======================================================================================================="
+read -p "Write your Job Name. (Enter=Maintain before name) : " JOBNAME
+
+if [[ ! $JOBNAME = "" ]]
+then
+sed -i "s/#PBS -N.*/#PBS -N ${JOBNAME}/g" run.sh
+else
+JOBNAME=$(grep "PBS -N" run.sh | awk '{print $3}')
+fi
+
+echo "$JOBNAME   $(pwd)" >> ~/JOBHISTORY.txt           
+
+jid=$(qstat -u khyeon |tail -1|awk '/./'|awk -F '.' '{print $1}')
+cd $(pwd)
+qsub -W depend=afterok:$jid run.sh
+
+exit 0

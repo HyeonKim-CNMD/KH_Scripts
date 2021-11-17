@@ -1,0 +1,30 @@
+#!/bin/sh
+#release note
+#qdebug2.0 update: It is free from torque system, but I worry about memory overflow.
+
+echo ''
+echo '###Warning: Do not use it in parallel.###'
+echo ''
+ls /usr/local/VASP/
+read -p "Please choose package to run debug: " EXE
+/usr/local/VASP/${EXE} > stdout &
+pid=`echo $!`
+T=1
+while [ $T -eq 1 ]
+do
+    ir_kpt=`grep irre OUTCAR|awk '{print $2}'`
+    if [ "$ir_kpt" == '' ]
+        then
+        sleep 1
+    else
+        T=0
+        kill $pid
+    fi
+done
+echo ''
+echo 'The count of irreducible k-points is saved in an ikpt file.'
+echo $ir_kpt > ikpt
+echo ''
+echo '# of irreducible k-points is'
+cat ikpt
+

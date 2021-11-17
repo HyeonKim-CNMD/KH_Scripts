@@ -1,0 +1,75 @@
+#! /bin/sh
+
+echo "*------------------------------------------------------------------------------------------*"
+echo "|                                     GAUSSIAN                                             |"
+echo "| * No recommand to use n001~n010 in nucleus. please use Qgau                              |"
+echo "|                                                                                          |"
+echo "| o STEP 1: Check Input Structure                                                          |"
+echo "| o STEP 2: SET input and run.sh into optimized settings                                   |"
+echo "| o STEP 3: Check Relaxation                                                               |"
+echo "| o STEP 4: Check Convergence                                                              |"
+echo "| o STEP 5: Plot Energy convergence                                                        |"
+echo "| o STEP 6: Recalculation to remove imaginary frequency                                    |"
+echo "| o STEP 7: Calculation Energy - Time                                                      |"
+echo "*------------------------------------------------------------------------------------------*"
+read -p "Write the index to do: " STEP
+
+if [[ $STEP -eq 1 ]]
+then
+ls
+read -p "Write the input file name: " INPUT
+echo "" >> $INPUT
+newzmat -icart -opdb $INPUT
+echo "Inp is converted to .pdb! use Vesta to open" 
+
+elif [[ $STEP -eq 3 ]]
+then
+for i in $(find . -maxdepth 5 -type d)
+do
+if [[ ! "$(ls $i | grep ".log")" == "" ]]
+then
+echo $i: $(grep -A2 "%MEM=" $i/*.log | tail -1) $(grep "termination" $i/*.log | tail -1 | awk '{print $1 $2}') $(grep "imaginary frequencies" $i/*.log | tail -1)
+fi
+done
+
+elif [[ $STEP -eq 4 ]]
+then
+grep -A5 "Converged" *.log
+
+elif [[ $STEP -eq 5 ]]
+then
+log_file=$(ls -l | awk '/ 1 /{print $NF}' | grep "\.log" | head -n 1)
+rm E_Conv.dat
+grep 'SCF D' $log_file | awk '{print $5}' >> E_Conv1.dat
+nl E_Conv1.dat >> E_Conv.dat
+rm E_Conv1.dat
+
+elif [[ $STEP -eq 6 ]]
+then
+newzmat -ichk checkpoint.chk
+STR=6
+END=$(grep -n "^$" checkpoint.com | tail -1 | cut -d":" -f1)
+cp input.inp input_ori.inp
+sed -i "5s/Opt.*/Opt=RCFC freq/" input.inp 
+sed -i "10,1000d" input.inp
+sed -n "$STR,${END}p" checkpoint.com >> input.inp
+
+
+elif [[ $STEP -eq 7 ]]
+then
+rm Energy.dat
+for i in $(find . -maxdepth 5 -type d)
+do
+if [[ ! "$(ls $i | grep ".log")" == "" ]]
+then
+E=$(grep "SCF D" $i/*.log | tail -1)
+E2=$(grep "EUMP" $i/*.log | tail -1)
+E3=$(grep " Energy=" $i/*.log | head -1)
+T1=$(grep "Leave" $i/*.log | head -1 | awk '{print $8}' | awk -F : '{print $1*3600 + $2*60 + $3}')
+T2=$(grep "Leave" $i/*.log | tail -1 | awk '{print $8}' | awk -F : '{print $1*3600 + $2*60 + $3}')
+B=$(grep ' basis functions,' $i/*.log | tail -1)
+echo $i $E $E2 $E3 Time: $(expr $T2 - $T1) Sec $B >> Energy.dat
+fi
+done
+cat Energy.dat
+fi

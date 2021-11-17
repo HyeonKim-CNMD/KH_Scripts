@@ -1,0 +1,15 @@
+#!/bin/sh
+
+qstat | grep khyeon
+
+read -p "지우고 싶은 Job ID 의 시작 지점을 입력하세요 (주의! 해당 지점 아래의 모든 job 이 지워집니다): " ID_START ID_END
+Job_List=($(qstat | grep khyeon | cut -d"." -f1))
+
+for Job in ${Job_List[@]}
+do
+if [[ $Job -ge $ID_START ]]&&[[ $Job -le $ID_END ]]
+then
+qdel $Job
+fi
+done
+

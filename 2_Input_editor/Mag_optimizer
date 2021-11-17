@@ -1,0 +1,134 @@
+#!/bin/sh
+
+# Magmom optimization 할 원소 및 목표값 입력
+read -p "MAGMOM 을 조절할 원소를 선택하세요: " Element
+read -p "목표로 하는 Total magnetic moment 를 정수로 입력하세요: " FMAG
+read -p "MAGMOM 초기지점 A를 지정해주세요: " A
+read -p "MAGMOM 초기지점 A에서의 Total magnetic moment를 지정해주세요(모르는 경우 ? 입력): " AMAG
+read -p "MAGMOM 초기지점 B를 지정해주세요: " B
+read -p "MAGMOM 초기지점 B에서의 Total magnetic moment를 지정해주세요(모르는 경우 ? 입력): " BMAG
+
+#POSCAR 와 INCAR 에서 Element sequence 저장
+Elements=($(sed -n "6p" POSCAR))
+ENumber=($(sed -n "7p" POSCAR))
+IN_MAG=($(sed -n "/MAGMOM/p" INCAR | cut -d"=" -f2 | awk -F'[*, ]' '{print $2 " "$4" "$6}'))
+echo ${Elements[@]}
+echo ${ENumber[@]}
+
+ESeq=0
+for i in ${Elements[@]}
+do
+if [ $i == $Element ]
+then
+break
+fi
+ESeq=$(expr $ESeq + 1 )
+done
+echo $ESeq
+
+#Bisection method 의 범위 지정
+MAG=$A
+
+#목표치에 달성할 때 까지 MAGMOM Feedback 수정됨
+while true
+do
+
+if [[ $AMAG != "?" ]]&&[[ $BMAG != "?" ]]
+then
+if [[ $(echo "$(echo "$FMAG - $AMAG" |bc -l | cut -d'-' -f2) < $(echo "$FMAG - $BMAG" | bc -l| cut -d'-' -f2)" |bc -l) == 1 ]]
+then
+B=$(echo "($B + $A)/2" | bc -l)
+BMAG="?"
+else
+A=$(echo "($B + $A)/2" | bc -l)
+AMAG="?"
+fi
+fi
+echo "A,AMAG: $A,$AMAG B,BMAG: $B,$BMAG"
+
+#MAG 값 설정
+if [[ $AMAG = "?" ]]
+then
+MAG=$A
+elif [[ $BMAG = "?" ]]
+then
+MAG=$B
+fi
+
+#MAGMOM 수정
+for((i=0;i<${#Elements[@]};i++))
+do
+if [ $i == $ESeq ]
+then
+MAGMOM+=($(echo "${ENumber[$i]}*$MAG "))
+else
+MAGMOM+=($(echo "${ENumber[$i]}*${IN_MAG[$i]} "))
+fi
+done
+sed -i "s/MAGMOM.*/MAGMOM=$(echo ${MAGMOM[@]})/" INCAR
+echo "Now Magmom: ${MAGMOM[@]}"
+MAGMOM=() #RESET
+
+#qsub & ID
+rm relax.out
+JOBID=$(qsub run.sh | cut -d"." -f1)
+
+#계산 진행도 Check
+Force=5
+while [[ $(echo "$Force > 0.3"|bc -l) == 1 ]]
+do
+sleep 1m
+echo "Sleep1m"
+if [[ $(qstat | grep $JOBID) == "" ]]
+then
+break 
+elif [[ -e relax.out ]]&&[[ ! $(gro) == "" ]]
+then
+Force=$(gro | tail -1 | awk '{print $5}')
+TMAG=$(gro | grep "mag" | awk '{print $16}' | tail -1)
+Energy=$(gro | grep "mag" | awk '{print $9}' | tail -1) 
+echo "Force: $Force Total magmom: $TMAG Energy: $Energy"
+fi
+done
+
+#1차 목표 범위에 있는지 확인
+if [[ $(echo "$TMAG > ($FMAG - 0.5)" | bc -l) == 1 ]]&&[[ $(echo "$TMAG < ($FMAG + 0.5)" | bc -l) == 1 ]]
+then
+
+while [[ $(echo "$Force > 0.1"|bc -l) == 1 ]]
+do
+sleep 1m
+echo "Sleep1m"
+if [[ $(qstat | grep $JOBID) == "" ]]
+then
+break
+elif [[ -e relax.out ]]&&[[ ! $(gro) == "" ]]
+then
+Force=$(gro | tail -1 | awk '{print $5}')
+TMAG=$(gro | grep "mag" | awk '{print $16}' | tail -1)
+Energy=$(gro | grep "mag" | awk '{print $9}' | tail -1)
+echo "Force: $Force Total magmom: $TMAG Energy: $Energy"
+fi
+done
+
+#최종 목표 범위에 도달하면 탈출
+if [[ $(echo "$TMAG > ($FMAG - 0.3)" | bc -l) == 1 ]]&&[[ $(echo "$TMAG < ($FMAG + 0.3)" | bc -l) == 1 ]]
+then
+break
+fi
+
+fi
+
+#목표 값에 도달하지 못하면 jobs 제거
+qdel $JOBID
+
+#TMAG 값을 저장
+if [[ $MAG == $B ]]
+then
+BMAG=$TMAG
+elif [[ $MAG == $A ]]
+then
+AMAG=$TMAG
+fi
+
+done

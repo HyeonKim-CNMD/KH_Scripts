@@ -1,0 +1,14 @@
+#! /bin/sh
+
+for i in $(find . -maxdepth 1 -mindepth 1 -type d)
+do
+cd $i
+if [[ -a relax.out ]]
+then
+analyze-hse.sh
+NKP=$(grep NKP OUTCAR | awk '{print $4}')
+DirName=$(echo $i | rev | cut -d"/" -f1 | rev)
+grep "k-point" out | tail -$NKP > ../KPT_${DirName}.dat
+cd ..
+fi
+done
