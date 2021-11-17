@@ -141,7 +141,7 @@ Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 �
 Filename1 = Slab_Name.split('m')[0] + "m"
 Filename3 = "_" + Slab_Name.split('m')[1].split('_')[1]
 Filename4 = Slab_Name.split('m')[1].split('_')[2]
-os.system(f"echo '{2 * 1 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2} {Filename1} {Filename3}' > Temp.txt")
+os.system(f"echo '{2 * 1 + len(Cen_Layer)} {2 * Cen_Layer_U + len(Cen_Layer)} {2} {Filename1} {Filename3} {filename4}' > Temp.txt")
 
 for k in range(Cen_Layer_U, 0, -1):
     Upper_Del = Cen_Layer_U - k
