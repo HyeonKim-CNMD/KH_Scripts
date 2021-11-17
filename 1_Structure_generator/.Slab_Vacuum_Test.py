@@ -156,7 +156,7 @@ Slab_Temp['shift'] = 0
 Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
 Slab = surface.Slab.from_dict(Slab_Temp)
-Slab = Slab_Final.get_sorted_structure(None, False)
+Slab = Slab.get_sorted_structure(None, False)
 
 # 9. Vacuum distance 가 바뀌는 Slab Generation
 S_Dis, E_Dis, I_Dis=input("Convergence 를 확인할 Vacuum distance 의 Start_Distance, End_Distance, Distance 증가를 입력해주세요 (ex. 8 14 1= 8~14까지 1[A] 씩 증가): ").split(" ")
