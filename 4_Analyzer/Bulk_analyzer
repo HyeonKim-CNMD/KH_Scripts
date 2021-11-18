@@ -78,7 +78,7 @@ set xlabel 'K-mesh: LxMxN'
 set ylabel 'Energy difference [eV/FU]'
 set y2label 'Time per Electronic step [Sec]'
 set xrange[:]
-set xtic rotate by 90
+set xtics rotate by 90 right
 set yrange[-0.001:0.001]
 set y2range[:]
 set y2tics
