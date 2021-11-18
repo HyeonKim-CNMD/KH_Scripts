@@ -38,6 +38,7 @@ python ~/KH_Scripts/1_Structure_generator/.Slab_Generator_Final.py
 elif [[ $STEP == 2 ]]
 then
 echo "Please set KPOINTS to Previous Bulk Relaxation K-spacing!!"
+ls
 python ~/KH_Scripts/1_Structure_generator/.Slab_Surface_oriented_bulk.py
 
 ls
