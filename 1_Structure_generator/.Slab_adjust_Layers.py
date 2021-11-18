@@ -176,6 +176,6 @@ miller = Slab_Name.split('_')[1]
 Term = Slab_Name.split('_')[5]
 FH = Slab_Name.split('_')[2]
 SNum = int(Lower_Del) - int(Upper_Del) + 1
-VAng = Vacuum_height
+VAng = int(Vacuum_height)
 
 structure.IStructure.to(Slab_Final, "poscar", filename=f"POSCAR_{miller}_{FH}_SNum{SNum}_VAng{VAng}_{Term}")
