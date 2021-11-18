@@ -152,7 +152,7 @@ Filename2 = Slab_Name.split('g')[1].split('_')[1]
 os.system(f"echo '{S_Dis} {E_Dis} {I_Dis} {Filename1} {Filename2}' > Temp.txt")
 for k in range(int(S_Dis), int(E_Dis)+1, int(I_Dis)):
     Vacuum_height=float(k)
-    Slab_Temp2 = Slab_Temp
+    Slab_Temp2 = Slab.as_dict()
     MinC, MaxC = surface.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
     C_OriLen = Slab_Temp2['lattice']['c']
     Slab_Height = (MaxC - MinC) * C_OriLen
