@@ -28,7 +28,7 @@ Elements = []
 for i in range(0, len(Slab_Temp['sites'])):
     Slab_Temp['sites'][i]['label'] = i
     for j in 0, 1, 2:
-        if int(Slab_Temp['sites'][i]['abc'][j]) = 1:
+        if int(Slab_Temp['sites'][i]['abc'][j]) == 1:
             Slab_Temp['sites'][i]['abc'][j] = 0
     Elements.append((Slab_Temp['sites'][i]['species'][0]['element'], i,
                      Slab_Temp['lattice']['c'] * Slab_Temp['sites'][i]['abc'][2], Slab_Temp['lattice']['a'] * Slab_Temp['sites'][i]['abc'][0],Slab_Temp['lattice']['b'] * Slab_Temp['sites'][i]['abc'][1]))
