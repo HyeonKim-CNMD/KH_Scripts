@@ -139,7 +139,6 @@ Slab_Temp['shift'] = 0
 Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
 Slab = surface.Slab.from_dict(Slab_Temp)
-Slab = surface.center_slab(Slab) #Centerize
 Slab = Slab.get_sorted_structure(None, False)
 
 # 9. Vacuum=0 의 Bulk 구조 제작
@@ -166,9 +165,6 @@ else:  # Full_Cell 의 경우
         New_C = 0.5 + ((Old_C - 0.5) * C_ratio)
         Slab_Temp2['sites'][j]['abc'][2] = New_C
 
-# 10. 가장 Top atom 과 Bottom atom 은 같은 position 에 있으므로, 하나를 제거
-del(Slab_Temp2['sites'][-1])
-
 print("======================================================================================================================================================")
 Slab_Temp2["miller_index"] = (1, 1, 1)
 Slab_Temp2["oriented_unit_cell"] = Bulk.as_dict()
@@ -176,9 +172,12 @@ Slab_Temp2['shift'] = 0
 Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp2['energy'] = 0
 
+# 10. 가장 Top atom 과 Bottom atom 은 같은 position 에 있으므로, 하나를 제거
+del(Slab_Temp2['sites'][-1])
 
 # 10. 수정된 Dict 를 가지고 Slab 재 생성
 Slab_Final = surface.Slab.from_dict(Slab_Temp2)
+Slab_Final = surface.center_slab(Slab_Final) #Centerize
 Slab_Final = Slab_Final.get_sorted_structure(None, False)
 
 print(Slab_Final)
