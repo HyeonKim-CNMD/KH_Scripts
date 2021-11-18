@@ -3,7 +3,7 @@
 echo "CHECK RELAX                                                              "
 echo "===================================================================================================================================="
 
-for d in $(find . -maxdepth 5 -type d | grep -v "Step")
+for d in $(find . -maxdepth 5 -type d)
 do
 if [[ -a $d/relax.out ]]
 then
