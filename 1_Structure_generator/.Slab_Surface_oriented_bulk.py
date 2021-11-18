@@ -166,6 +166,7 @@ Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
 Slab_Temp['shift'] = 0
 Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
+print(Slab_Temp)
 
 # 11. Top or Bottom 의 같은 위치의 원소 제거
 for j in range(0,len(Slab_Temp['sites'])):
