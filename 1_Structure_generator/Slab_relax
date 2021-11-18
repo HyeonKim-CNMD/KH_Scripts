@@ -122,7 +122,7 @@ echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~
 done
 " >> run.sh
 
-sed -i -e "s/.*ISIF.*/ISIF=2/" -e "s/.*NSW.*/NSW=200/" INCAR
+sed -i -e "s/.*ISIF.*/ISIF=2/" -e "s/.*NSW.*/NSW=200/" -e "s/.*AMIN.*/AMIN=0.01/" INCAR
 
 elif [[ $STEP == 5 ]]
 then
