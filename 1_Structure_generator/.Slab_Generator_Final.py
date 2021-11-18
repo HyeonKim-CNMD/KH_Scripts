@@ -64,7 +64,7 @@ else:
     reorient_lattice = True
 
 #3. Slab 옵션을 바탕으로 Slab Class 의 생성
-SlabGen=surface.SlabGenerator(initial_structure,miller_index, min_slab_size, 4, lll_reduce, center_slab, in_unit_planes, primitive, max_normal_search, reorient_lattice)
+SlabGen=surface.SlabGenerator(initial_structure,miller_index, min_slab_size, Vacuum_height, lll_reduce, center_slab, in_unit_planes, primitive, max_normal_search, reorient_lattice)
 print('1. Raw slab class is generated\n-------------------------------------------------------------------------------------------------------------------------------')
 
 #4. Slab class 에서 가능한 모든 Terminations 의 Slabs 를 생성(Symmetrize 기능 포함)
