@@ -82,13 +82,13 @@ for i in Slabs:
             Old_C=Slab_Temp['sites'][j]['abc'][2]
             New_C=0.5+((Old_C-0.5)*C_ratio)
             Slab_Temp['sites'][j]['abc'][2]=New_C
-        Structure_Name=f"{miller_index_ori}_Full_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
+        Structure_Name=f"{''.join(miller_index_ori)}_Full_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
     elif center_slab == False: #Half_Cell 의 경우
         for j in range(0,len(Slab_Temp['sites'])):
             Old_C=Slab_Temp['sites'][j]['abc'][2]
             New_C=Old_C*C_ratio
             Slab_Temp['sites'][j]['abc'][2]=New_C
-        Structure_Name = f"{miller_index_ori}_Half_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
+        Structure_Name = f"{''.join(miller_index_ori)}_Half_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
 
     #8. 수정된 Dict 를 가지고 Slab 재 생성
     Slab_Final=surface.Slab.from_dict(Slab_Temp)
