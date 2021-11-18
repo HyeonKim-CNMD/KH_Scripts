@@ -166,18 +166,10 @@ Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
 Slab_Temp['shift'] = 0
 Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
-print(Slab_Temp)
-
-# 11. Top or Bottom 의 같은 위치의 원소 제거
-i=Upper_Del
-Del=Layer[i][1:len(Layer[i]):3]
-for j in range(0,len(Slab_Temp['sites'])):
-    if Del == Slab_Temp['sites'][j]['label']:
-        del(Slab_Temp['sites'][j])
-        break
 
 # 10. 수정된 Dict 를 가지고 Slab 재 생성
 Slab_Final = surface.Slab.from_dict(Slab_Temp)
+print(Slab_Final)
 Slab_Final = surface.center_slab(Slab_Final) #Centerize
 Slab_Final = Slab_Final.get_sorted_structure(None, False)
 
