@@ -26,10 +26,10 @@ print(Slab.as_dict())
 Slab_Temp = Slab.as_dict()
 Elements = []
 for i in range(0, len(Slab_Temp['sites'])):
-    Slab_Temp['sites'][i]['label'] = i
     for j in 0, 1, 2:
         if int(Slab_Temp['sites'][i]['abc'][j]) == 1:
             Slab_Temp['sites'][i]['abc'][j] = 0
+    Slab_Temp['sites'][i]['label'] = i
     Elements.append((Slab_Temp['sites'][i]['species'][0]['element'], i,
                      Slab_Temp['lattice']['c'] * Slab_Temp['sites'][i]['abc'][2], Slab_Temp['lattice']['a'] * Slab_Temp['sites'][i]['abc'][0],Slab_Temp['lattice']['b'] * Slab_Temp['sites'][i]['abc'][1]))
 Elements.sort(key=lambda x: x[2], reverse=True)
@@ -165,12 +165,20 @@ else:  # Full_Cell 의 경우
         Old_C = Slab_Temp2['sites'][j]['abc'][2]
         New_C = 0.5 + ((Old_C - 0.5) * C_ratio)
         Slab_Temp2['sites'][j]['abc'][2] = New_C
+
+# 10. C-axis 가 0, 1 로 동시에 존재하는 경우, atom 하나를 삭제
+for j in range(0, len(Slab_Temp2['sites'])):
+    if Slab_Temp2['sites'][j]['abc'][2] == 1:
+        del(Slab_Temp['sites'][j])
+
 print("======================================================================================================================================================")
 Slab_Temp2["miller_index"] = (1, 1, 1)
 Slab_Temp2["oriented_unit_cell"] = Bulk.as_dict()
 Slab_Temp2['shift'] = 0
 Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp2['energy'] = 0
+
+
 # 10. 수정된 Dict 를 가지고 Slab 재 생성
 Slab_Final = surface.Slab.from_dict(Slab_Temp2)
 Slab_Final = Slab_Final.get_sorted_structure(None, False)

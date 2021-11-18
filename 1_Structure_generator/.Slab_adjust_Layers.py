@@ -19,10 +19,13 @@ print("=========================================================================
 print(Slab)
 print(Slab.as_dict())
 
-# 2. C-axis coordinate를 기준으로 Sorting
+# 2. C-axis coordinate를 기준으로 Sorting + 모든 좌표 1을 0으로 치환
 Slab_Temp = Slab.as_dict()
 Elements = []
 for i in range(0, len(Slab_Temp['sites'])):
+    for j in 0, 1, 2:
+        if int(Slab_Temp['sites'][i]['abc'][j]) == 1:
+            Slab_Temp['sites'][i]['abc'][j] = 0
     Slab_Temp['sites'][i]['label'] = i
     Elements.append((Slab_Temp['sites'][i]['species'][0]['element'], i,
                      Slab_Temp['lattice']['c'] * Slab_Temp['sites'][i]['abc'][2], Slab_Temp['lattice']['a'] * Slab_Temp['sites'][i]['abc'][0],Slab_Temp['lattice']['b'] * Slab_Temp['sites'][i]['abc'][1]))
