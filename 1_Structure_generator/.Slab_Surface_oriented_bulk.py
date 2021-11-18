@@ -169,4 +169,4 @@ Slab_Final = surface.Slab.from_dict(Slab_Temp2)
 Slab_Final = Slab_Final.get_sorted_structure(None, False)
 print(Slab_Final)
 # 11. Slab 구조 파일의 재생성
-structure.IStructure.to(Slab_Final, "poscar", filename=f"{Slab_Name}_SOBulk")
+structure.IStructure.to(Slab_Final, "poscar", filename=f"{Slab_Name}_Bulk")
