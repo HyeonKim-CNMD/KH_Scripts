@@ -63,7 +63,7 @@ echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~
 done
 " >> run.sh
 
-sed -i -e "s/NSW.*/NSW=100/" -e "s/IBRION.*/IBRION=2/" -e "s/ISIF.*/ISIF=3/" INCAR
+sed -i -e "s/NSW.*/NSW=100/" -e "s/IBRION.*/IBRION=2/" -e "s/ISIF.*/ISIF=2/" INCAR
 
 elif [[ $STEP == 3 ]]
 then
