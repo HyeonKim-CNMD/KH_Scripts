@@ -172,11 +172,15 @@ Slab_Temp2['shift'] = 0
 Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp2['energy'] = 0
 
-# 10. 가장 Top atom 과 Bottom atom 은 같은 position 에 있으므로, 하나를 제거
-del(Slab_Temp2['sites'][-1])
-
 # 10. 수정된 Dict 를 가지고 Slab 재 생성
 Slab_Final = surface.Slab.from_dict(Slab_Temp2)
+Slab_Final = surface.center_slab(Slab_Final) #Centerize
+Slab_Final = Slab_Final.get_sorted_structure(None, False)
+
+# 11. 가장 Top or bottom Layer 원소 제거
+Slab_Final = Slab_Final.as_dict()
+del(Slab_Final['sites'][-1])
+Slab_Final = surface.Slab.from_dict(Slab_Final)
 Slab_Final = surface.center_slab(Slab_Final) #Centerize
 Slab_Final = Slab_Final.get_sorted_structure(None, False)
 
