@@ -170,7 +170,7 @@ print(Slab_Temp)
 
 # 11. Top or Bottom 의 같은 위치의 원소 제거
 for j in range(0,len(Slab_Temp['sites'])):
-    if Upper_Del == Slab_Temp['sites'][j]['label']:
+    if Upper_Del -1 == Slab_Temp['sites'][j]['label']:
         del(Slab_Temp['sites'][j])
         break
 
