@@ -139,7 +139,7 @@ Slab = surface.Slab.from_dict(Slab_Temp)
 Slab = surface.center_slab(Slab) #Centerize
 Slab = Slab.get_sorted_structure(None, False)
 
-# 9. Vacuum=0 의 Bulk 구조 제작
+# 9. Vacuum 값을 적용
 Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 입력해주세요: ")
 Vacuum_height=float(input("Angstrom 단위로 Vacuum level 을 기입해주세요 ex) 15.3(Vacuum adjust)/N(No adjust, default): "))
 Slab_Temp2 = Slab_Temp
@@ -169,6 +169,7 @@ Slab_Temp2['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp2['energy'] = 0
 # 10. 수정된 Dict 를 가지고 Slab 재 생성
 Slab_Final = surface.Slab.from_dict(Slab_Temp2)
+
 Slab_Final = Slab_Final.get_sorted_structure(None, False)
 print(Slab_Final)
 # 11. Slab 구조 파일의 재생성
