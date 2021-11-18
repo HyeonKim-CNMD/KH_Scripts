@@ -19,11 +19,17 @@ print("=========================================================================
 print(Slab)
 print(Slab.as_dict())
 
-# 2. C-axis coordinate를 기준으로 Sorting
+# 2. 모든 1.0000 을 0.0000 으로 치환
+
+
+# 2. C-axis coordinate를 기준으로 Sorting + 모든 좌표 1을 0으로 치환
 Slab_Temp = Slab.as_dict()
 Elements = []
 for i in range(0, len(Slab_Temp['sites'])):
     Slab_Temp['sites'][i]['label'] = i
+    for j in 0, 1, 2:
+        if int(Slab_Temp['sites'][i]['abc'][j]) = 1:
+            Slab_Temp['sites'][i]['abc'][j] = 0
     Elements.append((Slab_Temp['sites'][i]['species'][0]['element'], i,
                      Slab_Temp['lattice']['c'] * Slab_Temp['sites'][i]['abc'][2], Slab_Temp['lattice']['a'] * Slab_Temp['sites'][i]['abc'][0],Slab_Temp['lattice']['b'] * Slab_Temp['sites'][i]['abc'][1]))
 Elements.sort(key=lambda x: x[2], reverse=True)
@@ -168,6 +174,7 @@ Slab_Temp2['energy'] = 0
 # 10. 수정된 Dict 를 가지고 Slab 재 생성
 Slab_Final = surface.Slab.from_dict(Slab_Temp2)
 Slab_Final = Slab_Final.get_sorted_structure(None, False)
+
 print(Slab_Final)
 # 11. Slab 구조 파일의 재생성
 structure.IStructure.to(Slab_Final, "poscar", filename=f"{Slab_Name}_Bulk")
