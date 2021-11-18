@@ -78,13 +78,16 @@ for i in Slabs:
         C_ratio=float(C_OriLen/C_NewLen) #이동시켜야할 C axis 비율 저장
 
         #6. Sites 의 C coordination 수정
-        if center_slab == True: #Full Cell 의 경우
+        if Vac == 0: #Bulk 구조의 생성시
+            miller_index = list(map(str, miller_index))
+            Structure_Name = f"{''.join(miller_index)}_Bulk"
+
+        elif center_slab == True: #Full Cell 의 경우
             for j in range(0,len(Slab_Temp['sites'])):
                 Old_C=Slab_Temp['sites'][j]['abc'][2]
                 New_C=0.5+((Old_C-0.5)*C_ratio)
                 Slab_Temp['sites'][j]['abc'][2]=New_C
 
-            #7. Slab 구조의 Output 파일이름 설정
             miller_index=list(map(str, miller_index))
             Structure_Name=f"{''.join(miller_index)}_Full_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
 
@@ -94,13 +97,8 @@ for i in Slabs:
                 New_C=Old_C*C_ratio
                 Slab_Temp['sites'][j]['abc'][2]=New_C
 
-            #7. Slab 구조의 Output 파일이름 설정
             miller_index=list(map(str, miller_index))
             Structure_Name=f"{''.join(miller_index)}_Half_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
-
-        elif Vac == 0: #Bulk 구조의 생성시
-            miller_index = list(map(str, miller_index))
-            Structure_Name = f"{''.join(miller_index)}_Bulk"
 
         #8. 수정된 Dict 를 가지고 Slab 재 생성
         Slab_Final=surface.Slab.from_dict(Slab_Temp)

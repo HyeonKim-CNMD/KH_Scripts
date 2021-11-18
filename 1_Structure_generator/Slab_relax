@@ -38,6 +38,9 @@ python ~/KH_Scripts/1_Structure_generator/.Slab_Generator_Final.py
 elif [[ $STEP == 2 ]]
 then
 ls
+read -p "Surface-oriented Bulk 구조를 입력해주세요: " Bulk
+
+
 
 elif [[ $STEP == 3 ]]
 then
@@ -52,11 +55,11 @@ Filename2=$(cat Temp.txt | awk '{print $5}')
 sed -i "12,200d" run.sh
 echo "for((i=$S_Dis;i<=$E_Dis;i=i+$I_Dis))
 do
-mkdir 1_Vacuum
-mkdir 1_Vacuum/\${i}
+mkdir 2_Vacuum
+mkdir 2_Vacuum/\${i}
 cp $Filename1\${i}_\\$Filename2 POSCAR
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
-cp * 1_Vacuum/\${i}/.
+cp * 2_Vacuum/\${i}/.
 
 Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
 Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
@@ -82,11 +85,11 @@ Filename3=$(cat Temp.txt | awk '{print $6}')
 sed -i "12,200d" run.sh
 echo "for((i=$S_Lay;i<=$E_Lay;i=i+$I_Lay))
 do
-mkdir 2_Layer
-mkdir 2_Layer/\${i}
+mkdir 3_Layer
+mkdir 3_Layer/\${i}
 cp $Filename1\${i}${Filename2}_\\$Filename3 POSCAR
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
-cp * 2_Layer/\${i}/.
+cp * 3_Layer/\${i}/.
 
 Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
 Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
