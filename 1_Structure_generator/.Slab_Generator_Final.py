@@ -14,42 +14,54 @@ initial_structure=structure.Structure.from_file(f'{os.getcwd()}/{File}')
 miller_index_ori=list(input('Slab 을 만들 Plane 의 Miller index h k l 을 작성해주세요 ex) 104: '))
 miller_index=list(map(int, miller_index_ori))
 
-in_unit_planes=True #Layer 개수를 통한 Slab height 조절 사용
-    
-min_slab_size=float(input('Slab 의 최소 크기를 hkl Plane 개수로 입력해주세요: '))
+#3. 자동 구조 생성?
+YN=input("자동 설정값을 통해 구조를 생성하겠습니까? (Y=Enter/N) ")
+if YN == N:
+    in_unit_planes = True  # Layer 개수를 통한 Slab height 조절 사용
 
-Vacuum_height=float(input('Vacuum Height 를 Angstrom 단위로 입력해주세요: '))
+    min_slab_size = float(input('Slab 의 최소 크기를 hkl Plane 개수로 입력해주세요: '))
 
-lll_reduce=input('Slabs의 orthogonalization(LLL_reduce) 여부를 결정해주세요 ex) T/F(Default): ')
-if lll_reduce=="" or lll_reduce=="F":
-    lll_reduce=False
-if lll_reduce=="T":
-    lll_reduce=True
-        
-center_slab=input('Full-cell 을 만들지 Half-cell을 만들지 결정해주세요 ex) T(Full)/F(Half,Default): ')
-if center_slab=="" or center_slab=="F":
-	center_slab=False
-if center_slab=="T":
-    center_slab=True
-    
-primitive=input('slab을 Primitive cell 로 생성할지 말지 결정해주세요 ex)T(Default)/F: ')
-if primitive=="" or primitive=="T":
-	primitive=True
-if primitive=="F":
-    primitive==False
-    
-max_normal_search=input('Slab 생성시, c-axis 가 표면에 가능한 수직하도록 할 것인지(Maximally orthogonalized V3) 결정해주세요 ex) None(OFF, Default)/+int>(ON): ')
-try:
-	max_normal_search=int(max_normal_search)
-except:
-	max_normal_search=None
-    
-reorient_lattice=input('C-axis 가 Lattice 의 세번째 벡터가 되도록 Lattice parameters 를 재조정할지 결정해주세요 ex) T(Default)/F: ')
-if reorient_lattice=="" or reorient_lattice=="T":
-	reorient_lattice=True
-if reorient_lattice=="F":
-    reorient_lattice=False
-    
+    Vacuum_height = float(input('Vacuum Height 를 Angstrom 단위로 입력해주세요: '))
+
+    lll_reduce = input('Slabs의 orthogonalization(LLL_reduce = OUC) 여부를 결정해주세요 ex) T/F(Default): ')
+    if lll_reduce == "" or lll_reduce == "F":
+        lll_reduce = False
+    if lll_reduce == "T":
+        lll_reduce = True
+
+    center_slab = input('Full-cell 을 만들지 Half-cell을 만들지 결정해주세요 ex) T(Full,Default)/F(Half): ')
+    if center_slab == "" or center_slab == "T":
+        center_slab = True
+    if center_slab == "F":
+        center_slab = False
+
+    primitive = input('slab을 Primitive cell 로 생성할지 말지 결정해주세요 ex)T(Default)/F: ')
+    if primitive == "" or primitive == "T":
+        primitive = True
+    if primitive == "F":
+        primitive == False
+
+    max_normal_search = input('Slab 생성시, c-axis 가 표면에 가능한 수직하도록 할 것인지(Maximally orthogonalized V3) 결정해주세요 ex) None(OFF, Default)/+int>(ON): ')
+    try:
+        max_normal_search = int(max_normal_search)
+    except:
+        max_normal_search = None
+
+    reorient_lattice = input('C-axis 가 Lattice 의 세번째 벡터가 되도록 Lattice parameters 를 재조정할지 결정해주세요 ex) T(Default)/F: ')
+    if reorient_lattice == "" or reorient_lattice == "T":
+        reorient_lattice = True
+    if reorient_lattice == "F":
+        reorient_lattice = False
+
+else:
+    min_slab_size = 20
+    Vacuum_height = 15
+    lll_reduce = False
+    center_slab = True
+    primitive = True
+    max_normal_search = 30
+    reorient_lattice = True
+
 #3. Slab 옵션을 바탕으로 Slab Class 의 생성
 SlabGen=surface.SlabGenerator(initial_structure,miller_index, min_slab_size, 4, lll_reduce, center_slab, in_unit_planes, primitive, max_normal_search, reorient_lattice)
 print('1. Raw slab class is generated\n-------------------------------------------------------------------------------------------------------------------------------')
