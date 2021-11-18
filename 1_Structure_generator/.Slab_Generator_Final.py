@@ -11,8 +11,8 @@ File=input('Bulk structure 파일 이름을 작성 해주세요: ')
 initial_structure=structure.Structure.from_file(f'{os.getcwd()}/{File}')
 
 #2. Slabgenerator 관련 옵션 설정
-miller_index=list(input('Slab 을 만들 Plane 의 Miller index h k l 을 작성해주세요 ex) 104: '))
-miller_index=list(map(int, miller_index))
+miller_index_ori=list(input('Slab 을 만들 Plane 의 Miller index h k l 을 작성해주세요 ex) 104: '))
+miller_index=list(map(int, miller_index_ori))
 
 in_unit_planes=True #Layer 개수를 통한 Slab height 조절 사용
     
@@ -82,15 +82,13 @@ for i in Slabs:
             Old_C=Slab_Temp['sites'][j]['abc'][2]
             New_C=0.5+((Old_C-0.5)*C_ratio)
             Slab_Temp['sites'][j]['abc'][2]=New_C
-        miller_index = list(map(int, miller_index))
-        Structure_Name=f"{''.join(miller_index)}_Full_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
+        Structure_Name=f"{miller_index_ori}_Full_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
     elif center_slab == False: #Half_Cell 의 경우
         for j in range(0,len(Slab_Temp['sites'])):
             Old_C=Slab_Temp['sites'][j]['abc'][2]
             New_C=Old_C*C_ratio
             Slab_Temp['sites'][j]['abc'][2]=New_C
-        miller_index = list(map(int, miller_index))
-        Structure_Name = f"{''.join(miller_index)}_Half_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
+        Structure_Name = f"{miller_index_ori}_Half_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
 
     #8. 수정된 Dict 를 가지고 Slab 재 생성
     Slab_Final=surface.Slab.from_dict(Slab_Temp)
