@@ -54,7 +54,7 @@ if reorient_lattice=="F":
 SlabGen=surface.SlabGenerator(initial_structure,miller_index, min_slab_size, 4, lll_reduce, center_slab, in_unit_planes, primitive, max_normal_search, reorient_lattice)
 print('1. Raw slab class is generated\n-------------------------------------------------------------------------------------------------------------------------------')
 
-#5. Slab class 에서 가능한 모든 Terminations 의 Slabs 를 생성(Symmetrize 기능 포함)
+#4. Slab class 에서 가능한 모든 Terminations 의 Slabs 를 생성(Symmetrize 기능 포함)
 Slabs=SlabGen.get_slabs(None, 0.1,0.1,False,False,False)
 print('2. All raw slab terminologies are generated\n')
         
@@ -66,65 +66,49 @@ for i in Slabs:
     Caxis=i.as_dict()['lattice']['c']
     Slab_Height=(MaxC-MinC)*Caxis
     print(f'3. Slab height Calcutated: {Slab_Height}\n')
-   
-    #5. Lattice from Slab Class -> Vacuum height 수정
-    Slab_Temp=i.as_dict()
-    C_OriLen=Slab_Temp['lattice']['c']
-    C_NewLen=float(Slab_Height+Vacuum_height)
-    Slab_Temp['lattice']['matrix'][2][0]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][0] #Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp['lattice']['matrix'][2][1]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][1] #Angstrom 기반의 Vacuum Height 재설정
-    Slab_Temp['lattice']['matrix'][2][2]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][2] #Angstrom 기반의 Vacuum Height 재설정
-    C_ratio=float(C_OriLen/C_NewLen) #이동시켜야할 C axis 비율 저장
 
-    #6. Sites 의 C coordination 수정
-    if center_slab: #Full Cell 의 경우
-        for j in range(0,len(Slab_Temp['sites'])):
-            Old_C=Slab_Temp['sites'][j]['abc'][2]
-            New_C=0.5+((Old_C-0.5)*C_ratio)
-            Slab_Temp['sites'][j]['abc'][2]=New_C
+    for Vac in [Vacuum_height, 0]:
+        #5. Lattice from Slab Class -> Vacuum height 수정
+        Slab_Temp=i.as_dict()
+        C_OriLen=Slab_Temp['lattice']['c']
+        C_NewLen=float(Slab_Height+Vac)
+        Slab_Temp['lattice']['matrix'][2][0]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][0] #Angstrom 기반의 Vacuum Height 재설정
+        Slab_Temp['lattice']['matrix'][2][1]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][1] #Angstrom 기반의 Vacuum Height 재설정
+        Slab_Temp['lattice']['matrix'][2][2]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][2] #Angstrom 기반의 Vacuum Height 재설정
+        C_ratio=float(C_OriLen/C_NewLen) #이동시켜야할 C axis 비율 저장
 
-        #10. Slab 구조의 Output 파일이름 설정
-        miller_index=list(map(str, miller_index))
-        Structure_Name=f"{''.join(miller_index)}_Full_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
-        
-    else: #Half_Cell 의 경우
-        for j in range(0,len(Slab_Temp['sites'])):
-            Old_C=Slab_Temp['sites'][j]['abc'][2]
-            New_C=Old_C*C_ratio
-            Slab_Temp['sites'][j]['abc'][2]=New_C
-        
-        #10. Slab 구조의 Output 파일이름 설정
-        miller_index=list(map(str, miller_index))
-        Structure_Name=f"{''.join(miller_index)}_Half_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
-            
-    #11. 수정된 Dict 를 가지고 Slab 재 생성
-    Slab_Final=surface.Slab.from_dict(Slab_Temp)
-    Slab_Final=Slab_Final.get_sorted_structure(None,False)
-    print(Slab_Final)
-    
-    #12. 생성된 Slabs의 정보 출력
-    #with open(f"info_{Structure_Name}_#{Num}",'w') as f:
-    #    f.write(f"------------{Structure_Name}_#{Num}----------------\n")
-    #    f.write(str(Slab_Final))
-    #    f.write(f"\nSurface area: {i.surface_area}")
-    #    f.write(f"\nSlab height: {Slab_Height}")
-    #    if i.is_polar():
-    #        f.write(f"\nPolarization: Polar")
-    #        f.write(f"\nDipole: {i.dipole}")
-    #        #i.symmetrically_add_atom(specie, point, coords_are_cartesian=False)
-    #    else:
-    #        f.write(f"\nPolarization: non-Polar")
-    #    if i.is_symmetric():
-    #        f.write(f"\nInversion symmetry: Yes")
-    #    else:
-    #        f.write(f"\nInversion symmetry: No")
-    #    if i.have_equivalent_surfaces():
-    #        f.write(f"\n# of eqivalent sites on both surfaces: Same")
-    #    else:
-    #        f.write(f"\n# of eqivalent sites on both surfaces: Dif")
-    
-    #13. Slab 구조 파일의 생성
-    structure.IStructure.to(Slab_Final,"poscar",filename=f"POSCAR_{Structure_Name}_#{Num}")
-    
-    Num=Num+1
+        #6. Sites 의 C coordination 수정
+        if center_slab == True: #Full Cell 의 경우
+            for j in range(0,len(Slab_Temp['sites'])):
+                Old_C=Slab_Temp['sites'][j]['abc'][2]
+                New_C=0.5+((Old_C-0.5)*C_ratio)
+                Slab_Temp['sites'][j]['abc'][2]=New_C
+
+            #7. Slab 구조의 Output 파일이름 설정
+            miller_index=list(map(str, miller_index))
+            Structure_Name=f"{''.join(miller_index)}_Full_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
+
+        elif center_slab == False: #Half_Cell 의 경우
+            for j in range(0,len(Slab_Temp['sites'])):
+                Old_C=Slab_Temp['sites'][j]['abc'][2]
+                New_C=Old_C*C_ratio
+                Slab_Temp['sites'][j]['abc'][2]=New_C
+
+            #7. Slab 구조의 Output 파일이름 설정
+            miller_index=list(map(str, miller_index))
+            Structure_Name=f"{''.join(miller_index)}_Half_SNum{int(min_slab_size)}_VAng{int(Vacuum_height)}"
+
+        elif Vac == 0: #Bulk 구조의 생성시
+            miller_index = list(map(str, miller_index))
+            Structure_Name = f"{''.join(miller_index)}_Bulk"
+
+        #8. 수정된 Dict 를 가지고 Slab 재 생성
+        Slab_Final=surface.Slab.from_dict(Slab_Temp)
+        Slab_Final=Slab_Final.get_sorted_structure(None,False)
+        print(Slab_Final)
+
+        #9. Slab 구조 파일의 생성
+        structure.IStructure.to(Slab_Final,"poscar",filename=f"POSCAR_{Structure_Name}_#{Num}")
+
+        Num=Num+1
 
