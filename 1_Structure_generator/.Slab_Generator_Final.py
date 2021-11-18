@@ -54,6 +54,7 @@ if YN == "N":
         reorient_lattice = False
 
 else:
+    in_unit_planes = True
     min_slab_size = 20
     Vacuum_height = 15
     lll_reduce = False
