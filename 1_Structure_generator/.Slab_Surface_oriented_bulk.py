@@ -133,8 +133,11 @@ Slab_Temp['shift'] = 0
 Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
 Slab = surface.Slab.from_dict(Slab_Temp)
+print(Slab)
 Slab = surface.center_slab(Slab) #Centerize
+print(Slab)
 Slab = Slab.get_sorted_structure(None, False)
+print(Slab)
 
 # 9. Vacuum=0 의 Bulk 구조 제작
 Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 입력해주세요: ")
