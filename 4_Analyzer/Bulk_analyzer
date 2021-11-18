@@ -64,7 +64,7 @@ gnuplot E_Conv.gnu
 sed -i "s/0.001/0.01/g" E_Conv.gnu
 gnuplot E_Conv.gnu
 
-if [[ $STEP == 2 ]]
+elif [[ $STEP == 2 ]]
 then
 Check_rlx
 head ../POSCAR
