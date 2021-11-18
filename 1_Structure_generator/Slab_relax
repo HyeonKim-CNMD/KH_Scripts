@@ -82,7 +82,7 @@ sed -i -e "s/.*ISIF.*/ISIF=2/" -e "s/.*NSW.*/NSW=200/" INCAR
 
 elif [[ $STEP == 4 ]]
 then
-
+ls
 fi
 
 exit 0
