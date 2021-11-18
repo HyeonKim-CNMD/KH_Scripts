@@ -172,8 +172,10 @@ Slab_Final = surface.Slab.from_dict(Slab_Temp2)
 Slab_Final = Slab_Final.get_sorted_structure(None, False)
 print(Slab_Final)
 # 11. Slab 구조 파일의 재생성
-Filename1 = Slab_Name.split('m')[0] + "m"
-Filename2 = int(Lower_Del) - int(Upper_Del) + 1
-Filename3 = "_" + Slab_Name.split('m')[1].split('_')[1]
-Filename4 = Slab_Name.split('m')[1].split('_')[2]
-structure.IStructure.to(Slab_Final, "poscar", filename=f"{Filename1}{Filename2}{Filename3}_{Filename4}")
+miller = Slab_Name.split('_')[1]
+Term = Slab_Name.split('_')[5]
+FH = Slab_Name.split('_')[2]
+SNum = int(Lower_Del) - int(Upper_Del) + 1
+VAng = Vacuum_height
+
+structure.IStructure.to(Slab_Final, "poscar", filename=f"POSCAR_{miller}_{FH}_SNum{SNum}_VAng{VAng}_{Term}")
