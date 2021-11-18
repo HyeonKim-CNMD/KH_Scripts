@@ -5,10 +5,10 @@ echo "|                             <Slab Maker and Relax>                      
 echo "| o Step 0 Slab Surface Area Calculator                                          |"
 echo "| o Step 1 Generate Slab Structure from Bulk Structure                           |"
 echo "| o Step 2 Surface-oriented Bulk Structure KPT convergence test                  |"
-echo "| o Step 2 Vacuum distance convergence test                                      |"
-echo "| o Step 3 Layer convergence test                                                |"
-echo "| o Step 4 Termination comparison                                                |"
-echo "| o Step 5 Suface area comparison                                                |"
+echo "| o Step 3 Vacuum distance convergence test                                      |"
+echo "| o Step 4 Layer convergence test                                                |"
+echo "| o Step 5 Termination comparison                                                |"
+echo "| o Step 6 Suface area size effect comparison                                    |"
 echo "*--------------------------------------------------------------------------------*"
 read -p "몇번째 Step 을 진행할 지 정수로 적어주세요: " STEP
 
@@ -39,8 +39,10 @@ elif [[ $STEP == 2 ]]
 then
 ls
 read -p "Surface-oriented Bulk 구조를 입력해주세요: " Bulk
-
-
+mkdir 1_Bulk_relax
+cp * 1_Bulk_relax/.
+cp 1_Bulk_relax/$Bulk 1_Bulk_relax/POSCAR
+echo "Use Bulk_relax Script for Surface-oriented Bulk relax"
 
 elif [[ $STEP == 3 ]]
 then
