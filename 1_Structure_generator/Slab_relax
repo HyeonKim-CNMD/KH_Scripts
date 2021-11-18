@@ -48,9 +48,11 @@ echo "for((i=$KPT_STR;i<=$KPT_END;i++))
 do
 ABC=($(sed -n "4p" KPOINTS))
 Fold="\${ABC[0]}x\${ABC[1]}x\${i}"
+KPT="\${ABC[0]} \${ABC[1]} \${i}"
 
 mkdir 1_Bulk_KPT_Test
 mkdir 1_Bulk_KPT_Test/\$Fold
+sed -i '4s/.*/\$KPT/' KPOINTS
 
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 cp * 1_Bulk_KPT_Test/\$Fold/.
