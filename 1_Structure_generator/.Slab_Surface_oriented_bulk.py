@@ -137,8 +137,6 @@ Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
 Slab = surface.Slab.from_dict(Slab_Temp)
 Slab = Slab.get_sorted_structure(None, False)
-# 11. Top or Bottom 의 같은 위치의 원소 제거
-del(Slab_Temp['sites'][-1])
 
 # 9. Vacuum=0 의 Bulk 구조 제작
 Cell_type=input("Full cell 의 경우 F(or Enter), Half cell 의 경우 H 를 입력해주세요: ")
@@ -169,6 +167,11 @@ Slab_Temp['shift'] = 0
 Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
 
+# 11. Top or Bottom 의 같은 위치의 원소 제거
+for j in range(0,len(Slab_Temp['sites'])):
+    if Upper_Del == Slab_Temp['sites'][j]['label']:
+        del(Slab_Temp['sites'][j])
+        break
 
 # 10. 수정된 Dict 를 가지고 Slab 재 생성
 Slab_Final = surface.Slab.from_dict(Slab_Temp)
