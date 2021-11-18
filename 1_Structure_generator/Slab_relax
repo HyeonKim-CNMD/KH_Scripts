@@ -34,6 +34,13 @@ elif [[ $STEP == 1 ]]
 then
 ls
 python ~/KH_Scripts/1_Structure_generator/.Slab_Generator_Final.py
+read -p "Do the structre need to adjust the number of Layers? (Y=Enter/N): " YN
+if [[ $YN == "N" ]]
+then
+  pass
+else
+  python ~/KH_Scripts/1_Structure_generator/.Slab_adjust_Layers.py
+fi
 
 elif [[ $STEP == 2 ]]
 then
