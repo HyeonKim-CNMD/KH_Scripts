@@ -166,10 +166,8 @@ else:  # Full_Cell 의 경우
         New_C = 0.5 + ((Old_C - 0.5) * C_ratio)
         Slab_Temp2['sites'][j]['abc'][2] = New_C
 
-# 10. C-axis 가 0, 1 로 동시에 존재하는 경우, atom 하나를 삭제
-for j in range(0, len(Slab_Temp2['sites'])):
-    if Slab_Temp2['sites'][j]['abc'][2] == 1:
-        del(Slab_Temp['sites'][j])
+# 10. 가장 Top atom 과 Bottom atom 은 같은 position 에 있으므로, 하나를 제거
+del(Slab_Temp2['sites'][-1])
 
 print("======================================================================================================================================================")
 Slab_Temp2["miller_index"] = (1, 1, 1)
