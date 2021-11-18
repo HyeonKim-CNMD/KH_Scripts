@@ -136,28 +136,12 @@ for i in Sel:
             Slab_Temp['sites'][j]['properties'] = {'selective_dynamics': [False, False, False]}
             break
 
-# 8. 제거할 Layer 의 범위 설정 및 제거
-print("======================================================================================================================================================")
-Upper_Del, Lower_Del=map(int, input("남겨둘 Layer 의 범위를 입력해주세요 (ex. Layer 13 ~ Layer 26 보존=13 26 입력): ").split())
-Del=[]
-for i in range(0,Upper_Del):
-    Del=Del+list(Layer[i][1:len(Layer[i]):3])
-for i in range(Lower_Del+1,len(Layer)):
-    Del=Del+list(Layer[i][1:len(Layer[i]):3])
-print(f"지워지게 될 Element 위치: {Del}")
-for i in Del:
-    for j in range(0,len(Slab_Temp['sites'])):
-        if i == Slab_Temp['sites'][j]['label']:
-            del(Slab_Temp['sites'][j])
-            break
-
 Slab_Temp["miller_index"] = (1, 1, 1)
 Slab_Temp["oriented_unit_cell"] = Bulk.as_dict()
 Slab_Temp['shift'] = 0
 Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
 Slab = surface.Slab.from_dict(Slab_Temp)
-Slab = surface.center_slab(Slab) #Centerize
 Slab = Slab.get_sorted_structure(None, False)
 
 # 9. Vacuum distance 가 바뀌는 Slab Generation
