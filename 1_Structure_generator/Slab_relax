@@ -38,11 +38,32 @@ python ~/KH_Scripts/1_Structure_generator/.Slab_Generator_Final.py
 elif [[ $STEP == 2 ]]
 then
 ls
+echo "Please set KPOINTS to Previous Bulk Relaxation K-spacing!!"
 read -p "Surface-oriented Bulk 구조를 입력해주세요: " Bulk
-mkdir 1_Bulk_relax
-cp * 1_Bulk_relax/.
-cp 1_Bulk_relax/$Bulk 1_Bulk_relax/POSCAR
-echo "Use Bulk_relax Script for Surface-oriented Bulk relax"
+cp $Bulk POSCAR
+read -p "What is the C-axis KPT Start, End index? " KPT_STR KPT_END
+sed -i "12,200d" run.sh
+
+echo "for((i=$KPT_STR;i<=$KPT_END;i++))
+do
+ABC=(\$(sed "4p" KPOINTS))
+Fold='\${ABC[0]}x\${ABC[1]}x\${i}'
+
+mkdir 1_Bulk_KPT_Test
+mkdir 1_Bulk_KPT_Test/\$Fold
+
+mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
+cp * 1_Bulk_KPT_Test/\$Fold/.
+
+Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
+Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
+CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
+echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
+
+done
+" >> run.sh
+
+sed -i -e "s/NSW.*/NSW=100/" -e "s/IBRION.*/IBRION=2/" -e "s/ISIF.*/ISIF=3/" INCAR
 
 elif [[ $STEP == 3 ]]
 then
