@@ -37,10 +37,10 @@ python ~/KH_Scripts/1_Structure_generator/.Slab_Generator_Final.py
 
 elif [[ $STEP == 2 ]]
 then
-ls
 echo "Please set KPOINTS to Previous Bulk Relaxation K-spacing!!"
 python ~/KH_Scripts/1_Structure_generator/.Slab_Surface_oriented_bulk.py
 
+ls
 read -p "제작된 Surface-oriented Bulk 구조를 입력해주세요 " Bulk
 cp $Bulk POSCAR
 read -p "What is the C-axis KPT Start, End index? " KPT_STR KPT_END
