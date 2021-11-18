@@ -39,6 +39,7 @@ if [[ $YN == "N" ]]
 then
   pass
 else
+  ls
   python ~/KH_Scripts/1_Structure_generator/.Slab_adjust_Layers.py
 fi
 
