@@ -84,7 +84,7 @@ set y2range[:]
 set y2tics
 set ytics nomirror
 set key on inside top right nobox
-set term pngcairo size 960,480.00000000000000000000 enhanced font 'Helvetica, 14'
+set term pngcairo size 640,480.00000000000000000000 enhanced font 'Helvetica, 14'
 set output 'K_Conv_0.001eV.png'
 replot
 " > K_Conv.gnu
