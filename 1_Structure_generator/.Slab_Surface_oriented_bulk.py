@@ -169,8 +169,10 @@ Slab_Temp['energy'] = 0
 print(Slab_Temp)
 
 # 11. Top or Bottom 의 같은 위치의 원소 제거
+i=Upper_Del
+Del=Layer[i][1:len(Layer[i]):3]
 for j in range(0,len(Slab_Temp['sites'])):
-    if Upper_Del -1 == Slab_Temp['sites'][j]['label']:
+    if Del == Slab_Temp['sites'][j]['label']:
         del(Slab_Temp['sites'][j])
         break
 
