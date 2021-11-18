@@ -70,7 +70,7 @@ for i in Slabs:
     #5. Lattice from Slab Class -> Vacuum height 수정
     Slab_Temp=i.as_dict()
     C_OriLen=Slab_Temp['lattice']['c']
-    C_NewLen=float(Slab_Height+Vac)
+    C_NewLen=float(Slab_Height+Vacuum_height)
     Slab_Temp['lattice']['matrix'][2][0]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][0] #Angstrom 기반의 Vacuum Height 재설정
     Slab_Temp['lattice']['matrix'][2][1]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][1] #Angstrom 기반의 Vacuum Height 재설정
     Slab_Temp['lattice']['matrix'][2][2]=(C_NewLen/C_OriLen)*Slab_Temp['lattice']['matrix'][2][2] #Angstrom 기반의 Vacuum Height 재설정
