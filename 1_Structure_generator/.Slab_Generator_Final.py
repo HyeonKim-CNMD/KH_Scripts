@@ -16,7 +16,7 @@ miller_index=list(map(int, miller_index_ori))
 
 #3. 자동 구조 생성?
 YN=input("자동 설정값을 통해 구조를 생성하겠습니까? (Y=Enter/N) ")
-if YN == N:
+if YN == "N":
     in_unit_planes = True  # Layer 개수를 통한 Slab height 조절 사용
 
     min_slab_size = float(input('Slab 의 최소 크기를 hkl Plane 개수로 입력해주세요: '))
