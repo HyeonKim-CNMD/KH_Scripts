@@ -157,6 +157,7 @@ Slab_Temp['shift'] = 0
 Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
 Slab = surface.Slab.from_dict(Slab_Temp)
+Slab = surface.center_slab(Slab) #Centerize
 Slab = Slab.get_sorted_structure(None, False)
 
 # 9. Vacuum distance 가 바뀌는 Slab Generation
