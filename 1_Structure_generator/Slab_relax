@@ -52,7 +52,7 @@ KPT="\${ABC[0]} \${ABC[1]} \${i}"
 
 mkdir 1_Bulk_KPT_Test
 mkdir 1_Bulk_KPT_Test/\$Fold
-sed -i '4s/.*/\$KPT/' KPOINTS
+sed -i \"4s/.*/\$KPT/\" KPOINTS
 
 mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 cp * 1_Bulk_KPT_Test/\$Fold/.
