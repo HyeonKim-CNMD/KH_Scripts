@@ -46,7 +46,7 @@ sed -i "12,200d" run.sh
 
 echo "for((i=$KPT_STR;i<=$KPT_END;i++))
 do
-ABC=($(sed -n \"4p\" KPOINTS))
+ABC=($(sed -n "4p" KPOINTS))
 Fold=`\${ABC[0]}x\${ABC[1]}x\${i}`
 
 mkdir 1_Bulk_KPT_Test
