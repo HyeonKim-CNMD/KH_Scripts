@@ -55,7 +55,7 @@ if YN == "N":
 
 else:
     in_unit_planes = True
-    min_slab_size = 30
+    min_slab_size = 31
     Vacuum_height = 15
     lll_reduce = False
     center_slab = True
