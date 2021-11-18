@@ -14,7 +14,7 @@ read -p "몇번째 Step 을 진행할 지 정수로 적어주세요: " STEP
 if [[ $STEP == 0 ]]
 then
 ls
-sh ~/KH_Scripts/1_Structure_generator./Slab_Surface_Area
+sh ~/KH_Scripts/1_Structure_generator/.Slab_Surface_Area
 
 elif [[ $STEP == 1 ]]
 then
