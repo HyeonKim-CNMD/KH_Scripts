@@ -167,9 +167,16 @@ Slab_Temp['shift'] = 0
 Slab_Temp['scale_factor'] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 Slab_Temp['energy'] = 0
 
+# 11. C 값이 가장 높은 값을 제거
+Temp=0
+for i in range(0, len(Slab_Temp['sites'])):
+    if Slab_Temp['sites'][i]['abc'][2] > Temp:
+        Temp = Slab_Temp['sites'][i]['abc'][2]
+        Max=i
+del(Slab_Temp['sites'][Max])
+
 # 10. 수정된 Dict 를 가지고 Slab 재 생성
 Slab_Final = surface.Slab.from_dict(Slab_Temp)
-print(Slab_Final)
 Slab_Final = surface.center_slab(Slab_Final) #Centerize
 Slab_Final = Slab_Final.get_sorted_structure(None, False)
 
