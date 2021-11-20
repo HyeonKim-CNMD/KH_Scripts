@@ -38,7 +38,7 @@ ls
 python ~/KH_Scripts/4_Analyzer/.Slab_Interlayer_Distance.py
 Inter_Dis=$(cat Temp.txt)
 Vac=$(echo -e "427\n3\n$Inter_Dis\n2\n" | vaspkit | grep "Maximum of macroscopic average" | cut -d":" -f2)
-EF=$(grep E-fermi OUTCAR | cut -d":" -f2 | cut -d"X" -f1)
+EF=$(grep E-fermi OUTCAR |tail -1| cut -d":" -f2 | cut -d"X" -f1)
 Work=$(echo "$Vac - $EF" | bc -l)
 echo "Vacuum level: ${Vac} eV Fermi-level of Slab: ${EF} Work function: ${Work}"
 
