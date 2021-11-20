@@ -154,7 +154,7 @@ Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
 CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
 echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
 " >> run.sh
-sed -i -e "s/.*IDIPOL.*/IDIPOL=3/" -e "s/.*LVHAR.*/LVHAR=200/" -e "s/.*AMIN.*/AMIN=0.01/" INCAR
+sed -i -e "s/.*IDIPOL.*/IDIPOL=3/" -e "s/.*LVHAR.*/LVHAR=TRUE/" -e "s/.*AMIN.*/AMIN=0.01/" INCAR
 fi
 
 exit 0
