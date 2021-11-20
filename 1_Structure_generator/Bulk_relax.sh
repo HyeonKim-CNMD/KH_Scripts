@@ -203,7 +203,7 @@ LWAVE     = .FALSE.
 # LDAUU     =                
 # LDAUJ     =                
 # LDAUPRINT = 2              
- LMAXMIX   =   #s=0, p=2, d=4, f=6
+ LMAXMIX   = 2  #s=0, p=2, d=4, f=6
 
 ### DOS related values
  LORBIT    = 11             
