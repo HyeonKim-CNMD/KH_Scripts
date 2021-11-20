@@ -9,6 +9,7 @@ echo "| o Step 3 Vacuum distance convergence test                               
 echo "| o Step 4 Layer convergence test                                                |"
 echo "| o Step 5 Termination comparison                                                |"
 echo "| o Step 6 Suface area size effect comparison                                    |"
+echo "| o Step 7 Work function calculation                                             |"
 echo "*--------------------------------------------------------------------------------*"
 read -p "몇번째 Step 을 진행할 지 정수로 적어주세요: " STEP
 
@@ -140,6 +141,20 @@ sed -i -e "s/.*ISIF.*/ISIF=2/" -e "s/.*NSW.*/NSW=200/" -e "s/.*AMIN.*/AMIN=0.01/
 elif [[ $STEP == 5 ]]
 then
 ls
+
+
+elif [[ $STEP == 7 ]]
+then
+cp CONTCAR POSCAR
+sed -i "12,200d" run.sh
+echo "mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
+
+Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
+Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
+CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
+echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
+" >> run.sh
+sed -i -e "s/.*IDIPOL.*/IDIPOL=3/" -e "s/.*LVHAR.*/LVHAR=200/" -e "s/.*AMIN.*/AMIN=0.01/" INCAR
 fi
 
 exit 0
