@@ -40,7 +40,7 @@ sed -i "$(expr $i - 6)s/$Origin/U/" ${File}.xyz
 elif [[ $STEP == 2 ]]
 then
 ls
-QD_Bulk_To_Sphere.py
+python ~/KH_Scripts/1_Structure_generator/.QD_Bulk_To_Sphere.py
 
 elif [[ $STEP == 4 ]]
 then

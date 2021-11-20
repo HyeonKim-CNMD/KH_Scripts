@@ -286,7 +286,7 @@ cat Bandgap.dat
 #======================================================================================================================
 elif [[ $STEP == 6 ]]
 then
-python ~/bin/My_scripts/defect_parse_change.py
+python ~/KH_Scripts/1_Structure_generator/.defect_parse_change.py
 
 elif [[ $STEP == 7 ]]
 then
