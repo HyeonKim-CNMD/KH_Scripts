@@ -42,7 +42,7 @@ read -p "몇번째 Step 을 진행할 지 정수로 적어주세요: " STEP
 if [[ $STEP == 1 ]]
 then
 Check_rlx
-head ../POSCAR
+head $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR
 read -p "Write Number of Formula units of Structure!: " FU
 read -p "Write the name of material: " Material
 Check_relax | cut -d"/" -f2 > E_Conv.dat
@@ -68,7 +68,7 @@ gnuplot E_Conv.gnu
 elif [[ $STEP == 2 ]]
 then
 Check_rlx
-head ../POSCAR
+head $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR
 read -p "Write Number of Formula units of Structure!: " FU
 read -p "Write the name of material: " Material
 Check_relax | cut -d"/" -f2 > K_Conv.dat
