@@ -25,7 +25,7 @@ Elements = []
 for i in range(0, len(Slab_Temp['sites'])):
     Slab_Temp['sites'][i]['label'] = i
     Elements.append((Slab_Temp['sites'][i]['species'][0]['element'], i,
-                     Slab_Temp['lattice']['c'] * Slab_Temp['sites'][i]['abc'][2]))
+                     Slab_Temp['lattice']['c'] * Slab_Temp['sites'][i]['abc'][2], Slab_Temp['lattice']['a'] * Slab_Temp['sites'][i]['abc'][0],Slab_Temp['lattice']['b'] * Slab_Temp['sites'][i]['abc'][1]))
 Elements.sort(key=lambda x: x[2], reverse=True)
 
 # 3. 10^-6 을 기준으로 1 Layer 단위로 원소를 묶음
@@ -40,7 +40,7 @@ for i in range(0, len(Elements) - 1):
 print("======================================================================================================================================================")
 print("Layers of the Slab Structure")
 print("======================================================================================================================================================")
-print("{0:<10} | {1:<100}".format("Layer Idx", "Element, Element number, C"))
+print("{0:<10} | {1:<100}".format("Layer Idx", "Element, Element number, C, A, B"))
 print("------------------------------------------------------------------------------------------------------------------------------------------------------")
 for i in range(0, len(Layer)):
     print("{0:<10} | {1:<100}".format(f"Layer {i}", str(Layer[i])))
