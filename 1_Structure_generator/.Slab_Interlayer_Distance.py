@@ -9,7 +9,9 @@ from pymatgen.core import sites
 import numpy as np
 
 
-Slab_Name = input('Slab structure 파일 이름을 작성 해주세요: ')
+Slab_Name = input('Slab structure 파일 이름을 작성 해주세요 (Enter=CONTCAR) ')
+if Slab_Name == "":
+    Slab_Name="CONTCAR"
 Layers = input('Slab 의 Layer 개수를 입력해주세요: ')
 Slab = surface.Structure.from_file(f'{os.getcwd()}/{Slab_Name}')
 
