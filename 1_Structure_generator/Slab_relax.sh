@@ -34,31 +34,19 @@ python ~/KH_Scripts/1_Structure_generator/.Slab_Surface_oriented_bulk.py
 ls
 read -p "제작된 Surface-oriented Bulk 구조를 입력해주세요 " Bulk
 cp $Bulk POSCAR
-read -p "What is the C-axis KPT Start, End index? " KPT_STR KPT_END
+mkdir 1_SO_Bulk
 sed -i "12,200d" run.sh
 
-echo "for((i=$KPT_STR;i<=$KPT_END;i++))
-do
-ABC=($(sed -n "4p" KPOINTS))
-Fold=\"\${ABC[0]}x\${ABC[1]}x\${i}\"
-KPT=\"\${ABC[0]} \${ABC[1]} \${i}\"
-
-mkdir 1_Bulk_KPT_Test
-mkdir 1_Bulk_KPT_Test/\$Fold
-sed -i \"4s/.*/\$KPT/\" KPOINTS
-
-mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
-cp * 1_Bulk_KPT_Test/\$Fold/.
+echo "mpirun -machinefile \$PBS_NODEFILE -np \$NUMBER \$EXE > relax.out
 
 Init_time=\$(sed -n '3p' OUTCAR | awk '{print \$5, \$6}')
 Used_core=\$(sed -n '4p' OUTCAR | awk '{print \$3}')
 CPU_time=\$(grep 'Total CPU' OUTCAR | awk '{print \$6}')
 echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~/Calculation_Time.log
-
-done
 " >> run.sh
 
 sed -i -e "s/NSW.*/NSW=100/" -e "s/IBRION.*/IBRION=2/" -e "s/ISIF.*/ISIF=2/" INCAR
+echo "KPOINTS 간격을 Slab 의 a,b-axis 간격에 맞게 C-axis 를 설정하세요"
 
 elif [[ $STEP == 3 ]]
 then

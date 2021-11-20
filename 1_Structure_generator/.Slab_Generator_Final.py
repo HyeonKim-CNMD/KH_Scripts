@@ -60,7 +60,7 @@ else:
     lll_reduce = False
     center_slab = True
     primitive = True
-    max_normal_search = 30
+    max_normal_search = 50
     reorient_lattice = True
 
 #3. Slab 옵션을 바탕으로 Slab Class 의 생성
