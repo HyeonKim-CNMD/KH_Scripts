@@ -45,7 +45,7 @@ Check_rlx
 head $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR
 read -p "Write Number of Formula units of Structure!: " FU
 read -p "Write the name of material: " Material
-Check_relax | cut -d"/" -f2 > E_Conv.dat
+Check_relax | cut -d"/" -f2 > V_Conv.dat
 echo "plot 'E_Conv.dat' using 1:(\$5-\$4)/$FU axis x1y1 title 'Energy' with linespoints lw 2 lc 'dark-pink' ps 1 pt 7, 'E_Conv.dat' using 1:7 axis x1y2 title 'Time' with linespoints lw 2 lc 'royalblue' ps 1 pt 7
 set termopt enhanced
 set title 'Vacuum distance convergence test of ${Material}'
