@@ -18,6 +18,6 @@ Slab = surface.Structure.from_file(f'{os.getcwd()}/{Slab_Name}')
 MinC, MaxC = surface.get_slab_regions(Slab)[0]  # Slab 영역의 C-coordinate 최소/최대를 출력
 C_OriLen = Slab.as_dict()['lattice']['c']
 Slab_Height = (MaxC - MinC) * C_OriLen
-Interlayer_Dis = Slab_Height/float(Layers)
+Interlayer_Dis = Slab_Height/(float(Layers)-1)
 print(f"Slab_Height: {Slab_Height} [A] Number of Layers: {Layers} Interlayer Distance: {Interlayer_Dis} [A]")
 os.system(f"echo '{Interlayer_Dis}' > Temp.txt")
