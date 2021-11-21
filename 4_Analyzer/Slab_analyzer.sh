@@ -26,6 +26,7 @@ then
 fi
 
 done
+}
 
 function Surf_Area_Cal {
 Uni_Con=$(sed -n "2p" $1)
@@ -87,8 +88,6 @@ ls
 read -p "Surface Area 를 구할 구조의 이름을 입력해주세요: " Structure
 T=(Surf_Area_Cal $Structure)
 echo $T
-
-
 
 elif [[ $STEP == 3 ]]
 then
