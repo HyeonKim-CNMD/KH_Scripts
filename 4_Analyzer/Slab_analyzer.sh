@@ -37,12 +37,12 @@ if [[ -a $d/relax.out ]]
 then
   Nodes=$1
 	Bulk_E=$2
+	Surf_Area=$3
   D=$(echo $d | rev | cut -d"/" -f1 | rev)
 	M=$(grep "mag=" $d/relax.out -s -R -n | tail -1 | cut -d"=" -f5 )
 	Slab_E=$(grep "TOTEN" $d/OUTCAR -s -R -n | tail -1 | cut -d"=" -f2 | cut -d"e" -f1)
 	T=$(grep LOOP: $d/OUTCAR | awk 'BEGIN{time=0}{time+=$7}END{print time/NR}')
 	T=$(echo "$T/$Nodes" | bc -l)
-	Surf_Area=$(Surf_Area_Cal $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR)
 	Surf_E=$(echo "($Slab_E - $Bulk_E * $D)/2/$Surf_Area" | bc -l)
 	Surf_E_Last=$(echo "($Slab_E_Last - $Bulk_E * $D)*16.0219/2/$Surf_Area" | bc -l)
 
@@ -73,8 +73,6 @@ AB=$(echo "(${A_Vec[0]}*${B_Vec[0]} + ${A_Vec[1]}*${B_Vec[1]} + ${A_Vec[2]}*${B_
 Surf_Area=$(echo $AA $BB $AB | awk '{print sqrt($1*$2 - $3^2)}')
 
 echo "Surface Area of CONTCAR: " $Surf_Area "[A^2]"
-echo "$Surf_Area"
-
 }
 
 #==============================================================================================================================
@@ -128,7 +126,9 @@ head $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/run.sh
 read -p "Write the number of node used: " Nodes
 read -p "Write the name of material: " Material
 read -p "Write Bulk structure energy per Formula unit: " Bulk
-Layer_relax $Nodes $Bulk > L_Conv.dat
+Surf_Area_Cal $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR
+read -p "Write Slab surface area: " Surf_Area
+Layer_relax $Nodes $Bulk $Surf_Area > L_Conv.dat
 
 echo "plot 'L_Conv.dat' using 1:-(\$5-$Bulk*$1)*16.0219/2/$Surf_Area axis x1y1 title 'Energy' with linespoints lw 2 lc 'dark-pink' ps 1 pt 7, 'L_Conv.dat' using 1:7 axis x1y2 title 'Time' with linespoints lw 2 lc 'royalblue' ps 1 pt 7
 set termopt enhanced
