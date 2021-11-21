@@ -43,8 +43,8 @@ then
 	M=$(grep "mag=" $d/relax.out -s -R -n | tail -1 | cut -d"=" -f5 )
 	Slab_E=$(grep "TOTEN" $d/OUTCAR -s -R -n | tail -1 | cut -d"=" -f2 | cut -d"e" -f1)
 	T=$(grep LOOP: $d/OUTCAR | awk 'BEGIN{time=0}{time+=$7}END{print time/NR}')
-	T=$(echo "$T/$Nodes" | bc -l)
-	Surf_E=$(echo "($Slab_E - $Bulk_E * $D)/2/$Surf_Area" | bc -l)
+	T=$(echo "$T*$Nodes" | bc -l)
+	Surf_E=$(echo "($Slab_E - $Bulk_E * $D)*16.0219/2/$Surf_Area" | bc -l)
 	Surf_E_Last=$(echo "($Slab_E_Last - $Bulk_E * $Last_Fold)*16.0219/2/$Surf_Area" | bc -l)
 
 	if [[ $(grep "reached required accuracy - stopping structural energy minimisation" $d/relax.out) ]]
