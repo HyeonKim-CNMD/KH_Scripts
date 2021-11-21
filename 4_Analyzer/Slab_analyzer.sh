@@ -35,15 +35,14 @@ for d in ${Folders[@]}
 do
 if [[ -a $d/relax.out ]]
 then
-  Dir_Name2=$(echo $d | rev | cut -d"/" -f1 | rev)
-  Dir_Name1=$(echo $d | rev | cut -d"/" -f2 | rev)
-  D=${Dir_Name2}
+  Nodes=$1
+	Bulk_E=$2
+  D=$(echo $d | rev | cut -d"/" -f1 | rev)
 	M=$(grep "mag=" $d/relax.out -s -R -n | tail -1 | cut -d"=" -f5 )
 	Slab_E=$(grep "TOTEN" $d/OUTCAR -s -R -n | tail -1 | cut -d"=" -f2 | cut -d"e" -f1)
 	T=$(grep LOOP: $d/OUTCAR | awk 'BEGIN{time=0}{time+=$7}END{print time/NR}')
+	T=$(echo "$T/$Nodes" | bc -l)
 	Surf_Area=$(Surf_Area_Cal $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR)
-	Nodes=$1
-	Bulk_E=$2
 	Surf_E=$(echo "($Slab_E - $Bulk_E * $D)/2/$Surf_Area" | bc -l)
 	Surf_E_Last=$(echo "($Slab_E_Last - $Bulk_E * $D)*16.0219/2/$Surf_Area" | bc -l)
 
