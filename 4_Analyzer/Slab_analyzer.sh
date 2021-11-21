@@ -131,11 +131,11 @@ Surf_Area_Cal $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR
 read -p "Write Slab surface area: " Surf_Area
 Layer_relax $Nodes $Bulk $Surf_Area > L_Conv.dat
 
-echo "plot 'L_Conv.dat' using 1:-(\$5-$Bulk*$1)*16.0219/2/$Surf_Area axis x1y1 title 'Energy' with linespoints lw 2 lc 'dark-pink' ps 1 pt 7, 'L_Conv.dat' using 1:7 axis x1y2 title 'Time' with linespoints lw 2 lc 'royalblue' ps 1 pt 7
+echo "plot 'L_Conv.dat' using 1:(\$13-\$11) axis x1y1 title 'Energy' with linespoints lw 2 lc 'dark-pink' ps 1 pt 7, 'L_Conv.dat' using 1:15 axis x1y2 title 'Time' with linespoints lw 2 lc 'royalblue' ps 1 pt 7
 set termopt enhanced
-set title 'Vacuum distance convergence test of ${Material}'
-set xlabel 'Vacuum distance [A]'
-set ylabel 'Energy difference [eV/FU]'
+set title 'Layer thickness convergence test of ${Material}'
+set xlabel 'Number of Layers'
+set ylabel \"Surface Energy difference [J/m^2]\"
 set y2label 'Time per Electronic step [Sec]'
 set xrange[:]
 set yrange[-0.001:0.001]
