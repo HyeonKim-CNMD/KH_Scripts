@@ -30,6 +30,7 @@ done
 
 function Layer_relax {
 Folders=($(find . -maxdepth 1 -type d))
+Last_Fold=$(echo ${Folders[-1]} | rev | cut -d"/" -f1 | rev)
 Slab_E_Last=$(grep "TOTEN" ${Folders[-1]}/OUTCAR -s -R -n | tail -1 | cut -d"=" -f2 | cut -d"e" -f1)
 for d in ${Folders[@]}
 do
@@ -44,7 +45,7 @@ then
 	T=$(grep LOOP: $d/OUTCAR | awk 'BEGIN{time=0}{time+=$7}END{print time/NR}')
 	T=$(echo "$T/$Nodes" | bc -l)
 	Surf_E=$(echo "($Slab_E - $Bulk_E * $D)/2/$Surf_Area" | bc -l)
-	Surf_E_Last=$(echo "($Slab_E_Last - $Bulk_E * $D)*16.0219/2/$Surf_Area" | bc -l)
+	Surf_E_Last=$(echo "($Slab_E_Last - $Bulk_E * $Last_Fold)*16.0219/2/$Surf_Area" | bc -l)
 
 	if [[ $(grep "reached required accuracy - stopping structural energy minimisation" $d/relax.out) ]]
 	then
