@@ -3,12 +3,13 @@
 echo "*--------------------------------------------------------------------------------*"
 echo "|                             <Slab Maker and Relax>                             |"
 echo "| o Step 1 Generate Slab Structure from Bulk Structure                           |"
-echo "| o Step 2 Surface-oriented Bulk Structure KPT convergence test                  |"
-echo "| o Step 3 Vacuum distance convergence test                                      |"
-echo "| o Step 4 Layer convergence test                                                |"
-echo "| o Step 5 Termination comparison                                                |"
-echo "| o Step 6 Suface area size effect comparison                                    |"
-echo "| o Step 7 Work function calculation                                             |"
+echo "| o Step 2 Adjust Layers and Vacuum of Slab structure                            |"
+echo "| o Step 3 Surface-oriented Bulk Structure KPT convergence test                  |"
+echo "| o Step 4 Vacuum distance convergence test                                      |"
+echo "| o Step 5 Layer convergence test                                                |"
+echo "| o Step 6 Termination comparison                                                |"
+echo "| o Step 7 Suface area size effect comparison                                    |"
+echo "| o Step 8 Work function calculation                                             |"
 echo "*--------------------------------------------------------------------------------*"
 read -p "몇번째 Step 을 진행할 지 정수로 적어주세요: " STEP
 
@@ -16,16 +17,13 @@ if [[ $STEP == 1 ]]
 then
 ls
 python ~/KH_Scripts/1_Structure_generator/.Slab_Generator_Final.py
-read -p "Do the structre need to adjust the number of Layers? (Y=Enter/N): " YN
-if [[ $YN == "N" ]]
-then
-  pass
-else
-  ls
-  python ~/KH_Scripts/1_Structure_generator/.Slab_Adjust_Layers.py
-fi
 
 elif [[ $STEP == 2 ]]
+then
+ls
+python ~/KH_Scripts/1_Structure_generator/.Slab_Adjust_Layers.py
+
+elif [[ $STEP == 3 ]]
 then
 echo "Please set KPOINTS to Previous Bulk Relaxation K-spacing!!"
 ls
@@ -48,7 +46,7 @@ echo \$PBS_JOBID '    ' \$Init_time '    '  \$Used_core '     '  \$CPU_time >> ~
 sed -i -e "s/NSW.*/NSW=100/" -e "s/IBRION.*/IBRION=2/" -e "s/ISIF.*/ISIF=2/" INCAR
 echo "KPOINTS 간격을 Slab 의 a,b-axis 간격에 맞게 C-axis 를 설정하세요"
 
-elif [[ $STEP == 3 ]]
+elif [[ $STEP == 4 ]]
 then
 ls
 python ~/KH_Scripts/1_Structure_generator/.Slab_Vacuum_Test.py
@@ -77,7 +75,7 @@ done
 
 sed -i -e "s/.*ISIF.*/ISIF=2/" -e "s/.*NSW.*/NSW=0/" INCAR
 
-elif [[ $STEP == 4 ]]
+elif [[ $STEP == 5 ]]
 then
 ls
 python ~/KH_Scripts/1_Structure_generator/.Slab_Layer_Test.py
@@ -107,12 +105,12 @@ done
 
 sed -i -e "s/.*ISIF.*/ISIF=2/" -e "s/.*NSW.*/NSW=200/" -e "s/.*AMIN.*/AMIN=0.01/" INCAR
 
-elif [[ $STEP == 5 ]]
+elif [[ $STEP == 6 ]]
 then
 ls
 
 
-elif [[ $STEP == 7 ]]
+elif [[ $STEP == 8 ]]
 then
 cp CONTCAR POSCAR
 sed -i "12,200d" run.sh

@@ -81,7 +81,7 @@ echo "*-------------------------------------------------------------------------
 echo "|                                <Slab Analyzer>                                 |"
 echo "| o Step 1 Vacuum distance convergence plot                                      |"
 echo "| o Step 2 Surface Area Calculator                                               |"
-echo "| o Step 3 Surface Energy analyzer                                               |"
+echo "| o Step 3 Surface Energy convergence plot                                       |"
 echo "| o Step 4 Work function analyzer                                                |"
 echo "*--------------------------------------------------------------------------------*"
 read -p "몇번째 Step 을 진행할 지 정수로 적어주세요: " STEP
