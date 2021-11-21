@@ -7,9 +7,9 @@ for d in ${Folders[@]}
 do
 if [[ -a $d/relax.out ]]
 then
-        Dir_Name2=$(echo $d | rev | cut -d"/" -f1 | rev)
-        Dir_Name1=$(echo $d | rev | cut -d"/" -f2 | rev)
-        D=${Dir_Name1}/${Dir_Name2}
+  Dir_Name2=$(echo $d | rev | cut -d"/" -f1 | rev)
+  Dir_Name1=$(echo $d | rev | cut -d"/" -f2 | rev)
+  D=${Dir_Name1}/${Dir_Name2}
 	M=$(grep "mag=" $d/relax.out -s -R -n | tail -1 | cut -d"=" -f5 )
 	E=$(grep "TOTEN" $d/OUTCAR -s -R -n | tail -1 | cut -d"=" -f2 | cut -d"e" -f1)
 	T=$(grep LOOP: $d/OUTCAR | awk 'BEGIN{time=0}{time+=$7}END{print time/NR}')
@@ -22,6 +22,39 @@ then
 		echo "$D : Un-relaxed $E $E_Last Time: $T Mag= $M"
 	else
 		echo "$D : Proceeding $E $E_Last Time: $T Mag= $M"
+	fi
+fi
+
+done
+}
+
+function Layer_relax {
+Folders=($(find . -maxdepth 1 -type d))
+Slab_E_Last=$(grep "TOTEN" ${Folders[-1]}/OUTCAR -s -R -n | tail -1 | cut -d"=" -f2 | cut -d"e" -f1)
+for d in ${Folders[@]}
+do
+if [[ -a $d/relax.out ]]
+then
+  Dir_Name2=$(echo $d | rev | cut -d"/" -f1 | rev)
+  Dir_Name1=$(echo $d | rev | cut -d"/" -f2 | rev)
+  D=${Dir_Name2}
+	M=$(grep "mag=" $d/relax.out -s -R -n | tail -1 | cut -d"=" -f5 )
+	Slab_E=$(grep "TOTEN" $d/OUTCAR -s -R -n | tail -1 | cut -d"=" -f2 | cut -d"e" -f1)
+	T=$(grep LOOP: $d/OUTCAR | awk 'BEGIN{time=0}{time+=$7}END{print time/NR}')
+	Surf_Area=$(Surf_Area_Cal $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR)
+	Nodes=$1
+	Bulk_E=$2
+	Surf_E=$(echo "($Slab_E - $Bulk_E * $D)/2/$Surf_Area" | bc -l)
+	Surf_E_Last=$(echo "($Slab_E_Last - $Bulk_E * $D)*16.0219/2/$Surf_Area" | bc -l)
+
+	if [[ $(grep "reached required accuracy - stopping structural energy minimisation" $d/relax.out) ]]
+	then
+		echo "$D : Relaxed!   Slab_E: $Slab_E Slab_E_Last: $Slab_E_Last Surf_Area: $Surf_Area Surf_E: $Surf_E Surf_E_Last: $Surf_E_Last Time: $T Mag= $M"
+	elif [[ $(grep "ERROR" $d/relax.out) ]]||[[ $(grep "error" $d/relax.out) ]]
+	then
+		echo "$D : Un-relaxed Slab_E: $Slab_E Slab_E_Last: $Slab_E_Last Surf_Area: $Surf_Area Surf_E: $Surf_E Surf_E_Last: $Surf_E_Last Time: $T Mag= $M"
+	else
+		echo "$D : Proceeding Slab_E: $Slab_E Slab_E_Last: $Slab_E_Last Surf_Area: $Surf_Area Surf_E: $Surf_E Surf_E_Last: $Surf_E_Last Time: $T Mag= $M"
 	fi
 fi
 
@@ -41,7 +74,7 @@ AB=$(echo "(${A_Vec[0]}*${B_Vec[0]} + ${A_Vec[1]}*${B_Vec[1]} + ${A_Vec[2]}*${B_
 Surf_Area=$(echo $AA $BB $AB | awk '{print sqrt($1*$2 - $3^2)}')
 
 echo "Surface Area of CONTCAR: " $Surf_Area "[A^2]"
-return $Surf_Area
+echo "$Surf_Area"
 
 }
 
@@ -92,11 +125,13 @@ elif [[ $STEP == 3 ]]
 then
 ls
 Check_rlx
-head $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR
-read -p "Write Number of Formula units of Structure!: " FU
+head $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/run.sh
+read -p "Write the number of node used: " Nodes
 read -p "Write the name of material: " Material
-Check_relax | cut -d"/" -f2 > L_Conv.dat
-echo "plot 'L_Conv.dat' using 1:(\$5-\$4)/$FU axis x1y1 title 'Energy' with linespoints lw 2 lc 'dark-pink' ps 1 pt 7, 'L_Conv.dat' using 1:7 axis x1y2 title 'Time' with linespoints lw 2 lc 'royalblue' ps 1 pt 7
+read -p "Write Bulk structure energy per Formula unit: " Bulk
+Layer_relax $Nodes $Bulk > L_Conv.dat
+
+echo "plot 'L_Conv.dat' using 1:-(\$5-$Bulk*$1)*16.0219/2/$Surf_Area axis x1y1 title 'Energy' with linespoints lw 2 lc 'dark-pink' ps 1 pt 7, 'L_Conv.dat' using 1:7 axis x1y2 title 'Time' with linespoints lw 2 lc 'royalblue' ps 1 pt 7
 set termopt enhanced
 set title 'Vacuum distance convergence test of ${Material}'
 set xlabel 'Vacuum distance [A]'
