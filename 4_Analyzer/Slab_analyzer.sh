@@ -26,6 +26,22 @@ then
 fi
 
 done
+
+function Surf_Area_Cal {
+Uni_Con=$(sed -n "2p" $1)
+A_Vec=($(sed -n "3p" $1))
+B_Vec=($(sed -n "4p" $1))
+echo "A: " ${A_Vec[@]}
+echo "B: " ${B_Vec[@]}
+AA=$(echo "${A_Vec[0]}^2 + ${A_Vec[1]}^2 + ${A_Vec[2]}^2" | bc -l)
+BB=$(echo "${B_Vec[0]}^2 + ${B_Vec[1]}^2 + ${B_Vec[2]}^2" | bc -l)
+AB=$(echo "(${A_Vec[0]}*${B_Vec[0]} + ${A_Vec[1]}*${B_Vec[1]} + ${A_Vec[2]}*${B_Vec[2]})" |bc -l)
+
+Surf_Area=$(echo $AA $BB $AB | awk '{print sqrt($1*$2 - $3^2)}')
+
+echo "Surface Area of CONTCAR: " $Surf_Area "[A^2]"
+return $Surf_Area
+
 }
 
 #==============================================================================================================================
@@ -69,23 +85,37 @@ elif [[ $STEP == 2 ]]
 then
 ls
 read -p "Surface Area 를 구할 구조의 이름을 입력해주세요: " Structure
+T=(Surf_Area_Cal $Structure)
+echo $T
 
-Uni_Con=$(sed -n "2p" $Structure)
-A_Vec=($(sed -n "3p" $Structure))
-B_Vec=($(sed -n "4p" $Structure))
-echo "A: " ${A_Vec[@]}
-echo "B: " ${B_Vec[@]}
-AA=$(echo "${A_Vec[0]}^2 + ${A_Vec[1]}^2 + ${A_Vec[2]}^2" | bc -l)
-BB=$(echo "${B_Vec[0]}^2 + ${B_Vec[1]}^2 + ${B_Vec[2]}^2" | bc -l)
-AB=$(echo "(${A_Vec[0]}*${B_Vec[0]} + ${A_Vec[1]}*${B_Vec[1]} + ${A_Vec[2]}*${B_Vec[2]})" |bc -l)
 
-Surf_Area=$(echo $AA $BB $AB | awk '{print sqrt($1*$2 - $3^2)}')
-
-echo "Surface Area of CONTCAR: " $Surf_Area "[A^2]"
 
 elif [[ $STEP == 3 ]]
 then
 ls
+Check_rlx
+head $(find . -maxdepth 1 -mindepth 1 -type d | head -1)/POSCAR
+read -p "Write Number of Formula units of Structure!: " FU
+read -p "Write the name of material: " Material
+Check_relax | cut -d"/" -f2 > L_Conv.dat
+echo "plot 'L_Conv.dat' using 1:(\$5-\$4)/$FU axis x1y1 title 'Energy' with linespoints lw 2 lc 'dark-pink' ps 1 pt 7, 'L_Conv.dat' using 1:7 axis x1y2 title 'Time' with linespoints lw 2 lc 'royalblue' ps 1 pt 7
+set termopt enhanced
+set title 'Vacuum distance convergence test of ${Material}'
+set xlabel 'Vacuum distance [A]'
+set ylabel 'Energy difference [eV/FU]'
+set y2label 'Time per Electronic step [Sec]'
+set xrange[:]
+set yrange[-0.001:0.001]
+set y2range[:]
+set y2tics
+set ytics nomirror
+set key on inside top right nobox
+set term pngcairo size 640,480.00000000000000000000 enhanced font 'Helvetica, 14'
+set output 'L_Conv_0.001eV.png'
+replot" > L_Conv.gnu
+gnuplot L_Conv.gnu
+sed -i "s/0.001/0.01/g" L_Conv.gnu
+gnuplot L_Conv.gnu
 
 elif [[ $STEP == 4 ]]
 then
